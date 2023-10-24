@@ -1,0 +1,4 @@
+time="2023-10-23T11:12:17-05:00" level=error msg="pq: each UNION query must have the same number of columns" file=chat_usecase method=GetChatUser
+time="2023-10-23T14:48:40-05:00" level=error msg="pq: column \"last_update_message\" of relation \"user_grupo\" does not exist" file=grupo_ucase method=UpdateUserGrupoLastTimeUpdateMessage
+time="2023-10-23T14:48:59-05:00" level=error msg="pq: column \"last_update_message\" of relation \"user_grupo\" does not exist" file=grupo_ucase method=UpdateUserGrupoLastTimeUpdateMessage
+time="2023-10-23T14:49:00-05:00" level=error msg="pq: column \"last_update_message\" of relation \"user_grupo\" does not exist" file=grupo_ucase method=UpdateUserGrupoLastTimeUpdateMessage
