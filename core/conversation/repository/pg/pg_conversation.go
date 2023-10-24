@@ -19,12 +19,12 @@ func NewRepository(conn *sql.DB) r.ConversationRepository {
 
 func(p *conversationRepo) GetOrCreateConversation(ctx context.Context,id int,profileId int)(conversationId int,err error){
 	var query string
-	query = `select conversation_id from conversations where profile_id = $1 and establecimiento_id = $2`
+	query = `select id from chat where second_parent_id = $1 and establecimiento_id = $2`
 	err = p.Conn.QueryRowContext(ctx,query,profileId,id).Scan(&conversationId)
 	if err != nil{
 		log.Println("Creando conversation")
-		query = `insert into conversations(profile_id,establecimiento_id) values($1,$2) returning conversation_id`
-		err = p.Conn.QueryRowContext(ctx,query,profileId,id).Scan(&conversationId)
+		query = `insert into chat(second_parent_id,parent_id,type_chat) values($1,$2,$3) returning id`
+		err = p.Conn.QueryRowContext(ctx,query,profileId,id,r.TypeChatInboxEstablecimiento).Scan(&conversationId)
 		if err != nil{
 			return 
 		}

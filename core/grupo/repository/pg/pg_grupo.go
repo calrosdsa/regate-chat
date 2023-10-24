@@ -21,7 +21,7 @@ func NewRepository(conn *sql.DB) r.GrupoRepository {
 
 func (p *grupoRepo)GetUnreadMessages(ctx context.Context,profileId int,page int16,
 	size int8)(res []r.MessageGrupo,err error){
-	query := `select  gm.id,gm.grupo_id,gm.profile_id,gm.content,gm.data,gm.created_at,gm.reply_to,gm.type_message
+	query := `select  gm.id,gm.chat_id,gm.profile_id,gm.content,gm.data,gm.created_at,gm.reply_to,gm.type_message
 	from user_grupo as ug inner join grupo_message as gm on gm.grupo_id = ug.grupo_id 
 	and ug.last_update_messages <= gm.created_at where ug.profile_id = $1 
 	limit $2 offset $3`
@@ -37,9 +37,10 @@ func(p *grupoRepo)UpdateUserGrupoLastTimeUpdateMessage(ctx context.Context,profi
 
 func (p *grupoRepo) SaveGrupoMessage(ctx context.Context, d *r.MessageGrupo) (err error) {
 	log.Println(d.CreatedAt,"CreatedAt Message")
-	query := `insert into grupo_message (id,grupo_id,profile_id,content,created_at,reply_to,type_message,data) 
-	values($1,$2,$3,$4,current_timestamp,$5,$6,$7) returning id,created_at`
-	err = p.Conn.QueryRowContext(ctx, query, d.Id, d.GrupoId, d.ProfileId, d.Content, d.ReplyTo, d.TypeMessage, d.Data).Scan(&d.Id, &d.CreatedAt)
+	query := `insert into grupo_message (id,chat_id,profile_id,content,created_at,reply_to,type_message,data,grupo_id) 
+	values($1,$2,$3,$4,current_timestamp,$5,$6,$7,$8) returning id,created_at`
+	err = p.Conn.QueryRowContext(ctx, query, d.Id, d.ChatId, d.ProfileId, d.Content, d.ReplyTo,
+		d.TypeMessage, d.Data,d.ParentId).Scan(&d.Id, &d.CreatedAt)
 	if err != nil {
 		log.Println(err, "FAIL TO SAVE MESSAGE")
 	}
@@ -63,7 +64,7 @@ func (m *grupoRepo) fetchMessagesGrupo(ctx context.Context, query string, args .
 		t := r.MessageGrupo{}
 		err = rows.Scan(
 			&t.Id,
-			&t.GrupoId,
+			&t.ChatId,
 			&t.ProfileId,
 			&t.Content,
 			&t.Data,

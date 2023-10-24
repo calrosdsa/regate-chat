@@ -19,11 +19,11 @@ type GrupoWsHandler struct {
 }
 
 func NewHandler(e *echo.Echo,grupoUseCase r.GrupoUseCase){
-	go H.Run(grupoUseCase)
+	// go H.Run(grupoUseCase)
 	handler :=GrupoWsHandler{
 		grupoU: grupoUseCase,
 	}
-	e.GET("v1/ws/chat-grupo",handler.ChatGrupo)
+	// e.GET("v1/ws/chat-grupo",handler.ChatGrupo)
 	e.GET("v1/chat/grupo/unread-messages/",handler.GetUnreadMessages)
 }
 
@@ -56,10 +56,10 @@ func (h *GrupoWsHandler)GetUnreadMessages(c echo.Context)(err error){
 	return c.JSON(http.StatusOK, response)
 }
 
-func (ws *GrupoWsHandler) ChatGrupo(c echo.Context) (err error) {
-	casoId := c.QueryParam("id")
-	log.Println("chat grupo",casoId)
-	ServeWs(c.Response(), c.Request(), casoId)
-	return nil
-}
+// func (ws *GrupoWsHandler) ChatGrupo(c echo.Context) (err error) {
+// 	casoId := c.QueryParam("id")
+// 	log.Println("chat grupo",casoId)
+// 	ServeWs(c.Response(), c.Request(), casoId)
+// 	return nil
+// }
 

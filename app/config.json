@@ -1,0 +1,44 @@
+{
+  "debug": true,
+  "server": {
+    "address": ":9090"
+  },
+  "context":{
+    "timeout":2
+  },
+  "database": {
+      "host": "10.0.0.132",
+      "port": 5432,
+      "user": "postgres",
+      "pass": "12ab34cd56ef",
+      "name": "main"
+  },
+  "jwt":{
+    "jwt_secret":"jwtsecrettoken$"
+  },
+  "kafka":{
+      "url":"190.181.23.66:9092"
+  },
+  "logtash":{
+    "host":"localhost:50000"
+  },
+  "bucket":{
+    "default":"default"
+  },
+  "mail":{
+    "user":"jmiranda@teclu.com",
+    "password":"jmiranda2022",
+    "host":"mail.teclu.com"
+  },
+  "AWS_ID":"AKIAUDAYME7K3ZBHIAUP",
+  "AWS_SECRET":"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",
+  "mapbox_api_key":"pk.eyJ1Ijoiam1pcmFuZGEyMSIsImEiOiJjbGl0Y3YyeDEwMm1rM2ZwaXJ6eGs0MnNwIn0.rURAi6PkFGac0TBkM4QE-A",
+  "bnb":{
+    "account_id":"h7RPU5XW77OPoVQHfl52HQ==",
+    "authorization_id":"w17YKSaZHxagmOlcBZrV4A==",
+    "url":"http://test.bnb.com.bo/ClientAuthentication.API"
+  },
+  "admin_web_url":"http://localhost:3000",
+  "path":""
+
+}
