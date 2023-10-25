@@ -49,6 +49,25 @@ func (h *ChatHandler) GetChatUnreadMessages(c echo.Context)(err error) {
 	return c.JSON(http.StatusOK,res)
 }
 
+// func (h *ChatHandler) SyncMessages(c echo.Context)(err error) {
+// 	var data []r.MessagePublishRequest
+// 	err = c.Bind(&data)
+// 	if err != nil {
+// 		log.Println("SYNC error",err)
+// 		return c.JSON(http.StatusUnprocessableEntity, r.ResponseMessage{Message: err.Error()})
+// 	}
+// 	log.Println(data)
+// 	ctx := c.Request().Context()
+// 	for i :=0;i < len(data);i++{
+// 		h.chatUseCase.PublishMessage(ctx,data)
+// 	}
+// 	// if err != nil {
+// 		// log.Println("SYNC error",err)
+// 		// return c.JSON(http.StatusBadRequest, r.ResponseMessage{Message: err.Error()})
+// 	// }
+// 	return nil
+// }
+
 func (h *ChatHandler) PublishMessage(c echo.Context)(err error) {
 	var data r.MessagePublishRequest
 	err = c.Bind(&data)
@@ -58,12 +77,17 @@ func (h *ChatHandler) PublishMessage(c echo.Context)(err error) {
 	}
 	log.Println(data)
 	ctx := c.Request().Context()
-	h.chatUseCase.PublishMessage(ctx,data)
-	// if err != nil {
+	res,err := h.chatUseCase.PublishMessage(ctx,data)
+	if err != nil {
 		// log.Println("SYNC error",err)
-		// return c.JSON(http.StatusBadRequest, r.ResponseMessage{Message: err.Error()})
-	// }
-	return nil
+		return c.JSON(http.StatusBadRequest, r.ResponseMessage{Message: err.Error()})
+	}
+	response := struct {
+		Id int `json:"id"`
+	}{
+		Id: res,
+	}
+	return c.JSON(http.StatusOK,response)
 }
 
 func (h *ChatHandler)GetChatsUser(c echo.Context)(err error){

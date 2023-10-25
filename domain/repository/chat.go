@@ -22,8 +22,8 @@ type RequestChatUnreadMessages struct {
 type ChatUseCase interface {
 	GetChatsUser(ctx context.Context, profileId int, page int16, size int8) (res []Chat,
 		nextPage int16, err error)
-	PublishMessage(ctx context.Context, msg MessagePublishRequest)
-	GetChatUnreadMessages(ctx context.Context,d RequestChatUnreadMessages)(res []MessageGrupo,err error)
+	PublishMessage(ctx context.Context, msg MessagePublishRequest) (res int, err error)
+	GetChatUnreadMessages(ctx context.Context, d RequestChatUnreadMessages) (res []MessageGrupo, err error)
 }
 
 type ChatRepository interface {
@@ -52,4 +52,5 @@ type TypeChat int8
 const (
 	TypeChatGrupo                = 1
 	TypeChatInboxEstablecimiento = 2
+	TypeChatSala                 = 3
 )

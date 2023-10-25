@@ -18,7 +18,7 @@ type ConversationAdminUseCase interface {
 }
 
 type ConversationRepository interface {
-	SaveMessage(ctx context.Context, d *Inbox) (err error)
+	SaveMessage(ctx context.Context, d *MessageGrupo) (err error)
 	GetMessages(ctx context.Context, id int, page int16, size int8) ([]Inbox, error)
 	GetConversations(ctx context.Context, id int) ([]Conversation, error)
 
@@ -26,7 +26,7 @@ type ConversationRepository interface {
 }
 
 type ConversationUseCase interface {
-	SaveMessage(ctx context.Context, d *Inbox) (err error)
+	SaveMessage(ctx context.Context, d *MessageGrupo) (err error)
 	GetMessages(ctx context.Context, id int, page int16,size int8) (res []Inbox,nextPage int16,err error)
 	GetConversations(ctx context.Context, id int) ([]Conversation,error)
 	

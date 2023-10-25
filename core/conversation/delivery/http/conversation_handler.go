@@ -25,7 +25,6 @@ func NewHandler(e *echo.Echo, conversationUcase r.ConversationUseCase) {
 	e.GET("v1/conversation/messages/:id/",handler.GetMessages)
 	// e.GET("v1/conversation/messages/:id/",handler.GetConversationMessages)
 	e.GET("v1/conversations/",handler.GetConversations)
-	e.POST("v1/conversation/sync-messages/",handler.SyncMessage)
 	e.GET("v1/conversation/get-id/:establecimientoId/",handler.GetOrCreateConversation)
 }
 func (h *ConversationHandler)GetOrCreateConversation(c echo.Context)(err error){
@@ -52,26 +51,7 @@ func (h *ConversationHandler)GetOrCreateConversation(c echo.Context)(err error){
 	return c.JSON(http.StatusOK,response)
 }
 
-func (h *ConversationHandler)SyncMessage(c echo.Context)(err error){
-	log.Println("SYNC")
-	var data []r.Inbox
-	err = c.Bind(&data)
-	if err != nil {
-		log.Println("SYNC",err)
-		return c.JSON(http.StatusConflict, r.ResponseMessage{Message: err.Error()})
-	}
-	ctx := c.Request().Context()
-	for _,message := range data{
-		log.Println("SYNC MESSAGE",message)
-		err := h.conversationUcase.SaveMessage(ctx,&message)
-		if err != nil {
-		    log.Println("SYNC error",err)
-			// return c.JSON(http.StatusBadRequest, r.ResponseMessage{Message: err.Error()})
-		}
-		// log.Println("SYNC",err)
-	}
-	return c.JSON(http.StatusOK, data)
-}
+
 
 
 func (h *ConversationHandler) GetMessages(c echo.Context) (err error){

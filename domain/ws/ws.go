@@ -136,6 +136,7 @@ func (cs *WsServer) Publish(msg []byte, id int) {
 }
 
 func (cs *WsServer) AddSubscriber(s *Subscriber, id int,profileId int) {
+	log.Println(len(cs.Subscribers),"chats")
 	suscribers := cs.Subscribers[id]
 	log.Println(len(suscribers),"ADD SUSCRIBER" ,s)
 	if len(suscribers) == 0 {
@@ -145,15 +146,13 @@ func (cs *WsServer) AddSubscriber(s *Subscriber, id int,profileId int) {
 	}
 	log.Println(suscribers,"MAP IS NOT NIL")
 	cs.SubscribersMu.Lock()
-	for u,subscriber := range cs.Subscribers[id]{
-		if u == profileId{
-			log.Println("DELETING PREVIOUS CONNECTIONS")
-			cs.DeleteSubscriber(subscriber,id,profileId)
-			// log.Println(c.)
-		}
-	}
+	// prevSuscription,isPresent := cs.Subscribers[id][profileId]
+	// if isPresent {
+	// 	log.Println("DELETING PREVIOUS CONNECTIONS")
+	// 	cs.DeleteSubscriber(prevSuscription,id,profileId)
+	// }
+	
 	cs.Subscribers[id][profileId] = s
-	// cs.Subscribers[id][s] = typeChat
 	cs.SubscribersMu.Unlock()
 }
 

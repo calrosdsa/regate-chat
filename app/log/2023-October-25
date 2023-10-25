@@ -1,0 +1,55 @@
+time="2023-10-25T07:29:06-05:00" level=error msg="pq: got 2 parameters but the statement requires 1" file=grupo_usecase method=GetChatUnreadMessage
+time="2023-10-25T07:29:06-05:00" level=error msg="pq: got 2 parameters but the statement requires 1" file=chat_usecase method=GetChatUnreadMessages_Grupo
+time="2023-10-25T07:29:09-05:00" level=error msg="pq: got 2 parameters but the statement requires 1" file=grupo_usecase method=GetChatUnreadMessage
+time="2023-10-25T07:29:09-05:00" level=error msg="pq: got 2 parameters but the statement requires 1" file=chat_usecase method=GetChatUnreadMessages_Grupo
+time="2023-10-25T07:29:11-05:00" level=error msg="pq: got 2 parameters but the statement requires 1" file=grupo_usecase method=GetChatUnreadMessage
+time="2023-10-25T07:29:11-05:00" level=error msg="pq: got 2 parameters but the statement requires 1" file=chat_usecase method=GetChatUnreadMessages_Grupo
+time="2023-10-25T07:29:12-05:00" level=error msg="pq: got 2 parameters but the statement requires 1" file=grupo_usecase method=GetChatUnreadMessage
+time="2023-10-25T07:29:12-05:00" level=error msg="pq: got 2 parameters but the statement requires 1" file=chat_usecase method=GetChatUnreadMessages_Grupo
+time="2023-10-25T07:29:14-05:00" level=error msg="pq: got 2 parameters but the statement requires 1" file=grupo_usecase method=GetChatUnreadMessage
+time="2023-10-25T07:29:14-05:00" level=error msg="pq: got 2 parameters but the statement requires 1" file=chat_usecase method=GetChatUnreadMessages_Grupo
+time="2023-10-25T07:29:16-05:00" level=error msg="pq: got 2 parameters but the statement requires 1" file=grupo_usecase method=GetChatUnreadMessage
+time="2023-10-25T07:29:16-05:00" level=error msg="pq: got 2 parameters but the statement requires 1" file=chat_usecase method=GetChatUnreadMessages_Grupo
+time="2023-10-25T07:30:32-05:00" level=error msg="pq: got 2 parameters but the statement requires 1" file=grupo_usecase method=GetChatUnreadMessage
+time="2023-10-25T07:30:32-05:00" level=error msg="pq: got 2 parameters but the statement requires 1" file=chat_usecase method=GetChatUnreadMessages_Grupo
+time="2023-10-25T07:30:33-05:00" level=error msg="pq: got 2 parameters but the statement requires 1" file=grupo_usecase method=GetChatUnreadMessage
+time="2023-10-25T07:30:33-05:00" level=error msg="pq: got 2 parameters but the statement requires 1" file=chat_usecase method=GetChatUnreadMessages_Grupo
+time="2023-10-25T07:30:34-05:00" level=error msg="pq: got 2 parameters but the statement requires 1" file=grupo_usecase method=GetChatUnreadMessage
+time="2023-10-25T07:30:34-05:00" level=error msg="pq: got 2 parameters but the statement requires 1" file=chat_usecase method=GetChatUnreadMessages_Grupo
+time="2023-10-25T07:30:36-05:00" level=error msg="pq: got 2 parameters but the statement requires 1" file=grupo_usecase method=GetChatUnreadMessage
+time="2023-10-25T07:30:36-05:00" level=error msg="pq: got 2 parameters but the statement requires 1" file=chat_usecase method=GetChatUnreadMessages_Grupo
+time="2023-10-25T07:30:37-05:00" level=error msg="pq: got 2 parameters but the statement requires 1" file=grupo_usecase method=GetChatUnreadMessage
+time="2023-10-25T07:30:37-05:00" level=error msg="pq: got 2 parameters but the statement requires 1" file=chat_usecase method=GetChatUnreadMessages_Grupo
+time="2023-10-25T07:30:39-05:00" level=error msg="pq: got 2 parameters but the statement requires 1" file=grupo_usecase method=GetChatUnreadMessage
+time="2023-10-25T07:30:39-05:00" level=error msg="pq: got 2 parameters but the statement requires 1" file=chat_usecase method=GetChatUnreadMessages_Grupo
+time="2023-10-25T07:30:40-05:00" level=error msg="pq: got 2 parameters but the statement requires 1" file=grupo_usecase method=GetChatUnreadMessage
+time="2023-10-25T07:30:40-05:00" level=error msg="pq: got 2 parameters but the statement requires 1" file=chat_usecase method=GetChatUnreadMessages_Grupo
+time="2023-10-25T08:47:11-05:00" level=error msg="pq: duplicate key value violates unique constraint \"grupo_message_pkey\"" file=grupo_usecase method=SaveGrupoMessage
+time="2023-10-25T08:47:11-05:00" level=error msg="pq: duplicate key value violates unique constraint \"grupo_message_pkey\"" file=chat_usecase method=PublisMessage_SaveGrupoMessage
+time="2023-10-25T08:48:53-05:00" level=error msg="pq: insert or update on table \"grupo_message\" violates foreign key constraint \"fk_grupo\"" file=grupo_usecase method=SaveGrupoMessage
+time="2023-10-25T08:48:53-05:00" level=error msg="pq: insert or update on table \"grupo_message\" violates foreign key constraint \"fk_grupo\"" file=chat_usecase method=PublisMessage_SaveGrupoMessage
+time="2023-10-25T08:50:25-05:00" level=error msg="pq: insert or update on table \"grupo_message\" violates foreign key constraint \"fk_grupo\"" file=grupo_usecase method=SaveGrupoMessage
+time="2023-10-25T08:50:25-05:00" level=error msg="pq: insert or update on table \"grupo_message\" violates foreign key constraint \"fk_grupo\"" file=chat_usecase method=PublisMessage_SaveGrupoMessage
+time="2023-10-25T11:14:23-05:00" level=error msg="pq: INSERT has more expressions than target columns" file=grupo_usecase method=SaveGrupoMessage
+time="2023-10-25T11:14:23-05:00" level=error msg="pq: INSERT has more expressions than target columns" file=chat_usecase method=PublisMessage_SaveGrupoMessage
+time="2023-10-25T11:15:12-05:00" level=error msg="pq: column \"reply_to\" is of type integer but expression is of type timestamp with time zone" file=grupo_usecase method=SaveGrupoMessage
+time="2023-10-25T11:15:12-05:00" level=error msg="pq: column \"reply_to\" is of type integer but expression is of type timestamp with time zone" file=chat_usecase method=PublisMessage_SaveGrupoMessage
+time="2023-10-25T12:41:19-05:00" level=error msg="read tcp 172.20.20.76:58282->10.0.0.132:5432: wsarecv: A connection attempt failed because the connected party did not properly respond after a period of time, or established connection failed because connected host has failed to respond." file=grupo_usecase method=GetChatUnreadMessage
+time="2023-10-25T12:41:19-05:00" level=error msg="read tcp 172.20.20.76:58282->10.0.0.132:5432: wsarecv: A connection attempt failed because the connected party did not properly respond after a period of time, or established connection failed because connected host has failed to respond." file=chat_usecase method=GetChatUnreadMessages_Grupo
+time="2023-10-25T13:29:21-05:00" level=error msg="pq: column \"chat_id\" of relation \"conversation_message\" does not exist" file=chat_usecase method=PublishMessage_SaveConversationMessage
+time="2023-10-25T13:30:49-05:00" level=error msg="pq: value \"3774031377958650986\" is out of range for type integer" file=chat_usecase method=PublishMessage_SaveConversationMessage
+time="2023-10-25T13:32:18-05:00" level=error msg="pq: value \"1371165140475333669\" is out of range for type integer" file=chat_usecase method=PublishMessage_SaveConversationMessage
+time="2023-10-25T13:33:08-05:00" level=error msg="pq: duplicate key value violates unique constraint \"conversation_message_pkey\"" file=chat_usecase method=PublishMessage_SaveConversationMessage
+time="2023-10-25T13:56:47-05:00" level=error msg="pq: column s.name does not exist" file=chat_usecase method=GetChatUser
+time="2023-10-25T13:57:19-05:00" level=error msg="pq: each UNION query must have the same number of columns" file=chat_usecase method=GetChatUser
+time="2023-10-25T13:58:17-05:00" level=error msg="pq: each UNION query must have the same number of columns" file=chat_usecase method=GetChatUser
+time="2023-10-25T15:19:09-05:00" level=error msg="pq: column \"sala_id\" of relation \"grupo_message\" does not exist" file=grupo_usecase method=SaveMessage
+time="2023-10-25T15:19:09-05:00" level=error msg="pq: column \"sala_id\" of relation \"grupo_message\" does not exist" file=chat_usecase method=PublishMessage_SaveSalaMessage
+time="2023-10-25T15:19:52-05:00" level=error msg="pq: column \"chat_id\" of relation \"sala_message\" does not exist" file=grupo_usecase method=SaveMessage
+time="2023-10-25T15:19:52-05:00" level=error msg="pq: column \"chat_id\" of relation \"sala_message\" does not exist" file=chat_usecase method=PublishMessage_SaveSalaMessage
+time="2023-10-25T15:21:53-05:00" level=error msg="pq: column \"chat_id\" of relation \"sala_message\" does not exist" file=grupo_usecase method=SaveMessage
+time="2023-10-25T15:21:53-05:00" level=error msg="pq: column \"chat_id\" of relation \"sala_message\" does not exist" file=chat_usecase method=PublishMessage_SaveSalaMessage
+time="2023-10-25T15:23:32-05:00" level=error msg="pq: null value in column \"id\" violates not-null constraint" file=grupo_usecase method=SaveMessage
+time="2023-10-25T15:23:33-05:00" level=error msg="pq: null value in column \"id\" violates not-null constraint" file=chat_usecase method=PublishMessage_SaveSalaMessage
+time="2023-10-25T16:53:34-05:00" level=error msg="pq: insert or update on table \"grupo_message\" violates foreign key constraint \"fk_grupo\"" file=grupo_usecase method=SaveGrupoMessage
+time="2023-10-25T16:53:34-05:00" level=error msg="pq: insert or update on table \"grupo_message\" violates foreign key constraint \"fk_grupo\"" file=chat_usecase method=PublisMessage_SaveGrupoMessage

@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	"log"
 	_conversationDeliveryHttp "message/core/conversation/delivery/http"
-	_conversationDeliveryWs "message/core/conversation/delivery/ws"
 	_conversationR "message/core/conversation/repository/pg"
 	_conversationU "message/core/conversation/usecase"
 
@@ -15,6 +14,11 @@ import (
 	_grupoDeliveryHttp "message/core/grupo/delivery/http"
 	_grupoR "message/core/grupo/repository/pg"
 	_grupoU "message/core/grupo/usecase"
+
+	_salaDeliveryHttp "message/core/sala/delivery/http"
+	_salaR "message/core/sala/repository/pg"
+	_salaU "message/core/sala/usecase"
+
 
 	_wsChatDeliveryHttp "message/core/wschat/delivery/http"
 	// _wsChatU "message/core/wschat/usecase"
@@ -57,21 +61,24 @@ func Init(db *sql.DB){
 	grupoR := _grupoR.NewRepository(db)
 	grupoU := _grupoU.NewUseCase(timeoutContext,grupoR,utilU)
 	_grupoDeliveryHttp.NewHandler(e,grupoU)
+	//Sala
+	salaR := _salaR.NewRepository(db)
+	salaU := _salaU.NewUseCase(timeoutContext,salaR,utilU)
+	_salaDeliveryHttp.NewHandler(e,salaU)
 
 	//Conversation
 	conversationR := _conversationR.NewRepository(db)
 	conversationU := _conversationU.NewUseCase(timeoutContext,conversationR,utilU)
 	_conversationDeliveryHttp.NewHandler(e,conversationU)
-	_conversationDeliveryWs.NewWsHandler(e,conversationU)
-
-	//Chat
-	chatR := _chatR.NewRepository(db)
-	chatU := _chatU.NewUseCase(timeoutContext,chatR,utilU,grupoU,chatWsServer)
-	_chatDeliveryHttp.NewHandler(e,chatU)
-
+	
 	conversationAR := _conversationR.NewAdminRepository(db)
 	conversationAU := _conversationU.NewAdminUseCase(timeoutContext,conversationAR,utilU)
 	_conversationDeliveryHttp.NewAdminHandler(e,conversationAU)
+	
+	//Chat
+	chatR := _chatR.NewRepository(db)
+	chatU := _chatU.NewUseCase(timeoutContext,chatR,utilU,grupoU,conversationU,salaU,chatWsServer)
+	_chatDeliveryHttp.NewHandler(e,chatU)
 
 	e.Start("0.0.0.0:9091")
 }

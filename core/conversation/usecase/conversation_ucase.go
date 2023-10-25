@@ -53,7 +53,7 @@ func (u *grupoUcase) GetMessages(ctx context.Context, id int,page int16,size int
 	return
 }
 
-func (u *grupoUcase) SaveMessage(ctx context.Context, d *r.Inbox) (err error) {
+func (u *grupoUcase) SaveMessage(ctx context.Context, d *r.MessageGrupo) (err error) {
 	ctx, cancel := context.WithTimeout(ctx, u.timeout)
 	defer func() {
 		cancel()
