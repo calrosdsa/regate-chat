@@ -31,6 +31,17 @@ func NewUseCase(timeout time.Duration, grupoRepo r.GrupoRepository,utilU r.UtilU
 		utilU: utilU,
 	}
 }
+func (u *grupoUcase)GetChatUnreadMessage(ctx context.Context,chatId int64,lastUpdate string)(res []r.MessageGrupo,err error){
+	ctx, cancel := context.WithTimeout(ctx, u.timeout)
+	defer cancel()
+	res,err = u.grupoRepo.GetChatUnreadMessage(ctx,chatId,lastUpdate)
+	if err != nil  {
+		u.utilU.LogError("GetChatUnreadMessage","grupo_usecase",err.Error())
+		return
+	}
+	return
+}
+
 func (u *grupoUcase)GetUnreadMessages(ctx context.Context,profileId int,page int16,
 size int8)(res []r.MessageGrupo,nextPage int16,err error){
 	ctx, cancel := context.WithTimeout(ctx, u.timeout)

@@ -30,7 +30,25 @@ func NewHandler(e *echo.Echo, chatUseCase r.ChatUseCase) {
 	// e.GET("v1/conversations/",handler.GetConversations)
 	e.GET("v1/chats/",handler.GetChatsUser)
 	e.POST("v1/chat/publish/message/",handler.PublishMessage)
+	e.POST("v1/chat/unread-messages/",handler.GetChatUnreadMessages)
 }
+func (h *ChatHandler) GetChatUnreadMessages(c echo.Context)(err error) {
+	var data r.RequestChatUnreadMessages
+	err = c.Bind(&data)
+	if err != nil {
+		log.Println("SYNC error",err)
+		return c.JSON(http.StatusUnprocessableEntity, r.ResponseMessage{Message: err.Error()})
+	}
+	log.Println(data)
+	ctx := c.Request().Context()
+	res,err := h.chatUseCase.GetChatUnreadMessages(ctx,data)
+	if err != nil {
+		// log.Println("SYNC error",err)
+		return c.JSON(http.StatusBadRequest, r.ResponseMessage{Message: err.Error()})
+	}
+	return c.JSON(http.StatusOK,res)
+}
+
 func (h *ChatHandler) PublishMessage(c echo.Context)(err error) {
 	var data r.MessagePublishRequest
 	err = c.Bind(&data)

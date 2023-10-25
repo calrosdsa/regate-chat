@@ -27,6 +27,16 @@ func (p *grupoRepo)GetUnreadMessages(ctx context.Context,profileId int,page int1
 	limit $2 offset $3`
 	res,err = p.fetchMessagesGrupo(ctx,query,profileId,size,page *int16(size))
 	return
+	
+}
+func (p *grupoRepo)GetChatUnreadMessage(ctx context.Context,chatId int64,lastUpdated string )(res []r.MessageGrupo,err error){
+	query := `select gm.id,gm.chat_id,gm.profile_id,gm.content,gm.data,gm.created_at,gm.reply_to,gm.type_message
+	 from grupo_message as gm where chat_id = $1 and gm.created_at >= '2023-10-25T02:37:06.264Z'`
+	res,err = p.fetchMessagesGrupo(ctx,query,chatId,lastUpdated)
+	return
+
+	select gm.id,gm.chat_id,gm.profile_id,gm.content,gm.data,gm.created_at,gm.reply_to,gm.type_message
+	 from grupo_message as gm where chat_id = 1 and gm.created_at >= $2
 }
 
 func(p *grupoRepo)UpdateUserGrupoLastTimeUpdateMessage(ctx context.Context,profileId int)(err error){

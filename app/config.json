@@ -7,17 +7,17 @@
     "timeout":2
   },
   "database": {
-      "host": "10.0.0.132",
+      "host": "localhost",
       "port": 5432,
       "user": "postgres",
-      "pass": "12ab34cd56ef",
+      "pass": "postgres",
       "name": "main"
   },
   "jwt":{
     "jwt_secret":"jwtsecrettoken$"
   },
   "kafka":{
-      "url":"190.181.23.66:9092"
+      "url":"localhost:9094"
   },
   "logtash":{
     "host":"localhost:50000"

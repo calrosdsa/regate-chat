@@ -25,7 +25,10 @@ func NewHandler(e *echo.Echo,grupoUseCase r.GrupoUseCase){
 	}
 	// e.GET("v1/ws/chat-grupo",handler.ChatGrupo)
 	e.GET("v1/chat/grupo/unread-messages/",handler.GetUnreadMessages)
+	// e.GET("v1/chat/grupo/unread-messages/:chatId/",handler.GetChatUnreadMessages)
 }
+
+
 
 func (h *GrupoWsHandler)GetUnreadMessages(c echo.Context)(err error){
 	auth := c.Request().Header["Authorization"][0]
