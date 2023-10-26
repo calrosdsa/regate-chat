@@ -31,7 +31,7 @@ type ChatRepository interface {
 }
 
 type Chat struct {
-	Id                 int      `json:"id"`
+	Id                 int     `json:"id"`
 	Photo              *string  `json:"photo"`
 	Name               string   `json:"name"`
 	LastMessage        *string  `json:"last_message,omitempty"`

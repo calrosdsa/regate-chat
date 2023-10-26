@@ -8,6 +8,7 @@ type EstablecimientoConversation struct {
 	Photo          *string `json:"photo"`
 	ConversationId int     `json:"conversation_id"`
 	ProfileId      int     `json:"profile_id"`
+	ParentId   int `json:"parent_id"`
 }
 
 type ConversationAdminRepository interface {

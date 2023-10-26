@@ -32,16 +32,17 @@ func (p *conversationRepo) GetOrCreateConversation(ctx context.Context, id int, 
 	return
 }
 
-func (p *conversationRepo) SaveMessage(ctx context.Context, d *r.Message) (err error) {
+func (p *conversationRepo) SaveMessage(ctx context.Context,d *r.Message) (err error) {
 	// query := `insert into conversation_message (id,conversation_id,sender_id,content,created_at,reply_to)
 	// values($1,$2,$3,$4,$5,$6) returning id,created_at`
 	// err = p.Conn.QueryRowContext(ctx, query,d.Id ,d.ConversationId, d.SenderId, d.Content,d.CreatedAt, d.ReplyTo)
 	// .Scan(&d.Id, &d.CreatedAt)
 	log.Println(d.CreatedAt, "CreatedAt Message")
-	query := `insert into conversation_message (chat_id,sender_id,content,created_at,reply_to,type_message,data,profile_id) 
-	values($1,$2,$3,current_timestamp,$4,$5,$6,$7) returning id,created_at`
+	query := `insert into conversation_message (chat_id,profile_id,content,created_at,reply_to,
+	type_message,data,establecimiento_id,is_user) 
+	values($1,$2,$3,current_timestamp,$4,$5,$6,$7,$8) returning id,created_at`
 	err = p.Conn.QueryRowContext(ctx, query, d.ChatId, d.ProfileId, d.Content, d.ReplyTo,
-		d.TypeMessage, d.Data, d.ParentId).Scan(&d.Id, &d.CreatedAt)
+		d.TypeMessage, d.Data, d.ParentId,d.IsUser).Scan(&d.Id, &d.CreatedAt)
 	if err != nil {
 		log.Println(err, "FAIL TO SAVE MESSAGE")
 	}

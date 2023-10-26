@@ -1,0 +1,12 @@
+time="2023-10-26T06:57:07-05:00" level=error msg="pq: insert or update on table \"grupo_message\" violates foreign key constraint \"grupo_message_reply_to_fkey\"" file=grupo_usecase method=SaveGrupoMessage
+time="2023-10-26T06:57:07-05:00" level=error msg="pq: insert or update on table \"grupo_message\" violates foreign key constraint \"grupo_message_reply_to_fkey\"" file=chat_usecase method=PublisMessage_SaveGrupoMessage
+time="2023-10-26T06:57:55-05:00" level=error msg="pq: insert or update on table \"grupo_message\" violates foreign key constraint \"grupo_message_reply_to_fkey\"" file=grupo_usecase method=SaveGrupoMessage
+time="2023-10-26T06:57:55-05:00" level=error msg="pq: insert or update on table \"grupo_message\" violates foreign key constraint \"grupo_message_reply_to_fkey\"" file=chat_usecase method=PublisMessage_SaveGrupoMessage
+time="2023-10-26T07:00:54-05:00" level=error msg="pq: insert or update on table \"grupo_message\" violates foreign key constraint \"grupo_message_reply_to_fkey\"" file=grupo_usecase method=SaveGrupoMessage
+time="2023-10-26T07:00:54-05:00" level=error msg="pq: insert or update on table \"grupo_message\" violates foreign key constraint \"grupo_message_reply_to_fkey\"" file=chat_usecase method=PublisMessage_SaveGrupoMessage
+time="2023-10-26T07:01:04-05:00" level=error msg="pq: insert or update on table \"grupo_message\" violates foreign key constraint \"grupo_message_reply_to_fkey\"" file=grupo_usecase method=SaveGrupoMessage
+time="2023-10-26T07:01:04-05:00" level=error msg="pq: insert or update on table \"grupo_message\" violates foreign key constraint \"grupo_message_reply_to_fkey\"" file=chat_usecase method=PublisMessage_SaveGrupoMessage
+time="2023-10-26T07:08:42-05:00" level=error msg="pq: insert or update on table \"grupo_message\" violates foreign key constraint \"grupo_message_reply_to_fkey\"" file=grupo_usecase method=SaveGrupoMessage
+time="2023-10-26T07:08:42-05:00" level=error msg="pq: insert or update on table \"grupo_message\" violates foreign key constraint \"grupo_message_reply_to_fkey\"" file=chat_usecase method=PublisMessage_SaveGrupoMessage
+time="2023-10-26T07:11:04-05:00" level=error msg="pq: insert or update on table \"sala_message\" violates foreign key constraint \"fk_sala\"" file=grupo_usecase method=SaveMessage
+time="2023-10-26T07:11:04-05:00" level=error msg="pq: insert or update on table \"sala_message\" violates foreign key constraint \"fk_sala\"" file=chat_usecase method=PublishMessage_SaveSalaMessage

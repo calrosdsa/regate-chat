@@ -27,6 +27,7 @@ type Message struct {
 	Data        *string          `json:"data"`
 	CreatedAt   string           `json:"created_at,omitempty"`
 	ParentId    int              `json:"parent_id"`
+	IsUser      bool             `json:"is_user"`
 	ReplyTo     *int             `json:"reply_to"`
 	// ReplyMessage ReplyMessage     `json:"reply_message"`
 }

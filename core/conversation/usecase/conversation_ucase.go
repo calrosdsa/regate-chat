@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/segmentio/kafka-go"
+	"github.com/spf13/viper"
 )
 
 type grupoUcase struct {
@@ -19,8 +20,8 @@ type grupoUcase struct {
 
 func NewUseCase(timeout time.Duration, conversationRepo r.ConversationRepository, utilU r.UtilUseCase) r.ConversationUseCase {
 	w := &kafka.Writer{
-		Addr:     kafka.TCP("localhost:9094"),
-		Topic:    "notification-message-group",
+		Addr:     kafka.TCP(viper.GetString("kafka.host")),
+		Topic:    "notification-message-conversation",
 		Balancer: &kafka.LeastBytes{},
 	}
 	return &grupoUcase{

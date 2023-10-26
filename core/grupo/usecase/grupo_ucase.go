@@ -20,7 +20,7 @@ type grupoUcase struct {
 
 func NewUseCase(timeout time.Duration, grupoRepo r.GrupoRepository, utilU r.UtilUseCase) r.GrupoUseCase {
 	w := &kafka.Writer{
-		Addr:     kafka.TCP(viper.GetString("kafka.url")),
+		Addr:     kafka.TCP(viper.GetString("kafka.host")),
 		Topic:    "notification-message-group",
 		Balancer: &kafka.LeastBytes{},
 	}

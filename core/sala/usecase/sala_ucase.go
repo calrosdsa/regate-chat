@@ -20,7 +20,7 @@ type salaUcase struct {
 
 func NewUseCase(timeout time.Duration, salaRepo r.SalaRepository, utilU r.UtilUseCase) r.SalaUseCase {
 	w := &kafka.Writer{
-		Addr:     kafka.TCP(viper.GetString("kafka.url")),
+		Addr:     kafka.TCP(viper.GetString("kafka.host")),
 		Topic:    "notification-message-sala",
 		Balancer: &kafka.LeastBytes{},
 	}

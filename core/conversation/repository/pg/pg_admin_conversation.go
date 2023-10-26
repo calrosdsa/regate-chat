@@ -19,17 +19,15 @@ func NewAdminRepository(conn *sql.DB) r.ConversationAdminRepository {
 }
 
 func (p *conversationAdminRepo) GetConversationsEstablecimiento(ctx context.Context,uuid string) (res []r.EstablecimientoConversation,err error) {
-	query := `select p.nombre,p.apellido,p.profile_photo,c.conversation_id,c.profile_id from conversations as c 
-	inner join profiles as p on c.profile_id = p.profile_id
-	inner join establecimientos as e on e.uuid = $1
-	where c.establecimiento_id = e.establecimiento_id`
+	query := `select p.nombre,p.apellido,p.profile_photo,c.id,p.profile_id,c.parent_id
+	from chat as c 
+	inner join profiles as p on c.second_parent_id = p.profile_id
+	where c.parent_id = (select establecimiento_id from establecimientos where uuid = $1)`
 	res,err = p.fetchConversationsAdmin(ctx,query,uuid)
 	// query := `insert into conversation_message (id,conversation_id,sender_id,content,created_at,reply_to) 
 	// values($1,$2,$3,$4,$5,$6) returning id,created_at`
 	return
 }
-
-
 
 func (p *conversationAdminRepo) fetchConversationsAdmin(ctx context.Context, query string, args ...interface{}) (res []r.EstablecimientoConversation, err error) {
 	rows, err := p.Conn.QueryContext(ctx, query, args...)
@@ -51,6 +49,7 @@ func (p *conversationAdminRepo) fetchConversationsAdmin(ctx context.Context, que
 			&t.Photo,
 			&t.ConversationId,
 			&t.ProfileId,
+			&t.ParentId,
 		)
 		if err != nil {
 			log.Println(err)
