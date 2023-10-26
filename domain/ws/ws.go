@@ -15,11 +15,10 @@ import (
 )
 
 type MessagePublishRequest struct {
-	Message  r.MessageGrupo `json:"message"`
-	TypeChat r.TypeChat     `json:"type_chat"`
-	ChatId   int            `json:"chat_id"`
+	Message  r.Message  `json:"message"`
+	TypeChat r.TypeChat `json:"type_chat"`
+	ChatId   int        `json:"chat_id"`
 }
-
 
 type WsChatUseCase interface {
 	// PublishMessage(msg MessagePublishRequest)
@@ -51,15 +50,13 @@ type WsServer struct {
 	// GrupoUseCase r.GrupoUseCase
 }
 
-
-
 type Subscriber struct {
 	Msgs      chan []byte
 	CloseSlow func()
 }
 
 func (cs *WsServer) Subscribe(ctx context.Context, w http.ResponseWriter, r *http.Request,
-	id int,profileId int) error {
+	id int, profileId int) error {
 	var mu sync.Mutex
 	var c *websocket.Conn
 	var closed bool
@@ -74,8 +71,8 @@ func (cs *WsServer) Subscribe(ctx context.Context, w http.ResponseWriter, r *htt
 			}
 		},
 	}
-	cs.AddSubscriber(s, id,profileId)
-	defer cs.DeleteSubscriber(s, id,profileId)
+	cs.AddSubscriber(s, id, profileId)
+	defer cs.DeleteSubscriber(s, id, profileId)
 
 	c2, err := websocket.Accept(w, r, &websocket.AcceptOptions{
 		InsecureSkipVerify: true,
@@ -117,7 +114,7 @@ func (cs *WsServer) Publish(msg []byte, id int) {
 	cs.PublishLimiter.Wait(context.Background())
 	log.Println(len(cs.Subscribers))
 	suscribers := cs.Subscribers[id]
-	for _,s := range suscribers {
+	for _, s := range suscribers {
 		select {
 		case s.Msgs <- msg:
 		default:
@@ -135,29 +132,29 @@ func (cs *WsServer) Publish(msg []byte, id int) {
 
 }
 
-func (cs *WsServer) AddSubscriber(s *Subscriber, id int,profileId int) {
-	log.Println(len(cs.Subscribers),"chats")
+func (cs *WsServer) AddSubscriber(s *Subscriber, id int, profileId int) {
+	log.Println(len(cs.Subscribers), "chats")
 	suscribers := cs.Subscribers[id]
-	log.Println(len(suscribers),"ADD SUSCRIBER" ,s)
+	log.Println(len(suscribers), "ADD SUSCRIBER", s)
 	if len(suscribers) == 0 {
-	log.Println(suscribers,"MAP IS NIL")
+		log.Println(suscribers, "MAP IS NIL")
 		suscribers = make(map[int]*Subscriber)
 		cs.Subscribers[id] = suscribers
 	}
-	log.Println(suscribers,"MAP IS NOT NIL")
+	log.Println(suscribers, "MAP IS NOT NIL")
 	cs.SubscribersMu.Lock()
 	// prevSuscription,isPresent := cs.Subscribers[id][profileId]
 	// if isPresent {
 	// 	log.Println("DELETING PREVIOUS CONNECTIONS")
 	// 	cs.DeleteSubscriber(prevSuscription,id,profileId)
 	// }
-	
+
 	cs.Subscribers[id][profileId] = s
 	cs.SubscribersMu.Unlock()
 }
 
 // deleteSubscriber deletes the given Subscriber.
-func (cs *WsServer) DeleteSubscriber(s *Subscriber, id int,profileId int) {
+func (cs *WsServer) DeleteSubscriber(s *Subscriber, id int, profileId int) {
 	suscribers := cs.Subscribers[id]
 	if suscribers != nil {
 		if _, ok := suscribers[profileId]; ok {

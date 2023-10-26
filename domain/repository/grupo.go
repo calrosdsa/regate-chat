@@ -3,23 +3,23 @@ package repository
 import "context"
 
 type GrupoRepository interface {
-	SaveGrupoMessage(ctx context.Context, d *MessageGrupo) (err error)
-	GetUnreadMessages(ctx context.Context, profileId int, page int16, size int8) (res []MessageGrupo, err error)
-	GetChatUnreadMessage(ctx context.Context, chatId int64, lastUpdate string) (res []MessageGrupo, err error)
+	SaveGrupoMessage(ctx context.Context, d *Message) (err error)
+	GetUnreadMessages(ctx context.Context, profileId int, page int16, size int8) (res []Message, err error)
+	GetChatUnreadMessage(ctx context.Context, chatId int64, lastUpdate string) (res []Message, err error)
 	UpdateUserGrupoLastTimeUpdateMessage(ctx context.Context, profileId int) (err error)
 }
 
 type GrupoUseCase interface {
-	SaveGrupoMessage(ctx context.Context, d *MessageGrupo) (err error)
-	GetUnreadMessages(ctx context.Context, profileId int, page int16, size int8) (res []MessageGrupo,
+	SaveGrupoMessage(ctx context.Context, d *Message) (err error)
+	GetUnreadMessages(ctx context.Context, profileId int, page int16, size int8) (res []Message,
 		nextPage int16, err error)
-	GetChatUnreadMessage(ctx context.Context, chatId int64, lastUpdate string) (res []MessageGrupo, err error)
+	GetChatUnreadMessage(ctx context.Context, chatId int64, lastUpdate string) (res []Message, err error)
 	UpdateUserGrupoLastTimeUpdateMessage(ctx context.Context, profileId int) (err error)
 }
 
-type MessageGrupo struct {
+type Message struct {
 	Id          int              `json:"id"`
-	LocalId     int64              `json:"local_id"`
+	LocalId     int64            `json:"local_id"`
 	ChatId      int              `json:"chat_id"`
 	ProfileId   int              `json:"profile_id"`
 	TypeMessage GrupoMessageType `json:"type_message"`

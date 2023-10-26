@@ -3,9 +3,9 @@ package repository
 import "context"
 
 type MessagePublishRequest struct {
-	Message  MessageGrupo `json:"message"`
-	TypeChat TypeChat     `json:"type_chat"`
-	ChatId   int          `json:"chat_id"`
+	Message  Message  `json:"message"`
+	TypeChat TypeChat `json:"type_chat"`
+	ChatId   int      `json:"chat_id"`
 	// EventType MessageEventType `json:"event_type"`
 }
 type MessageEvent struct {
@@ -23,7 +23,7 @@ type ChatUseCase interface {
 	GetChatsUser(ctx context.Context, profileId int, page int16, size int8) (res []Chat,
 		nextPage int16, err error)
 	PublishMessage(ctx context.Context, msg MessagePublishRequest) (res int, err error)
-	GetChatUnreadMessages(ctx context.Context, d RequestChatUnreadMessages) (res []MessageGrupo, err error)
+	GetChatUnreadMessages(ctx context.Context, d RequestChatUnreadMessages) (res []Message, err error)
 }
 
 type ChatRepository interface {

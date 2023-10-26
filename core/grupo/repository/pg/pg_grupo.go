@@ -19,45 +19,44 @@ func NewRepository(conn *sql.DB) r.GrupoRepository {
 	}
 }
 
-func (p *grupoRepo)GetUnreadMessages(ctx context.Context,profileId int,page int16,
-	size int8)(res []r.MessageGrupo,err error){
+func (p *grupoRepo) GetUnreadMessages(ctx context.Context, profileId int, page int16,
+	size int8) (res []r.Message, err error) {
 	query := `select  gm.id,gm.chat_id,gm.profile_id,gm.content,gm.data,gm.created_at,gm.reply_to,gm.type_message
 	from user_grupo as ug inner join grupo_message as gm on gm.grupo_id = ug.grupo_id 
 	and ug.last_update_messages <= gm.created_at where ug.profile_id = $1 
 	limit $2 offset $3`
-	res,err = p.fetchMessagesGrupo(ctx,query,profileId,size,page *int16(size))
+	res, err = p.fetchMessagesGrupo(ctx, query, profileId, size, page*int16(size))
 	return
 }
-func (p *grupoRepo)GetChatUnreadMessage(ctx context.Context,chatId int64,lastUpdated string )(res []r.MessageGrupo,err error){
+func (p *grupoRepo) GetChatUnreadMessage(ctx context.Context, chatId int64, lastUpdated string) (res []r.Message, err error) {
 	query := `select gm.id,gm.chat_id,gm.profile_id,gm.content,gm.data,gm.created_at,gm.reply_to,gm.type_message
 	 from grupo_message as gm where chat_id = $1 and gm.created_at >= $2`
-	res,err = p.fetchMessagesGrupo(ctx,query,chatId,lastUpdated)
+	res, err = p.fetchMessagesGrupo(ctx, query, chatId, lastUpdated)
 	return
 
 	// select gm.id,gm.chat_id,gm.profile_id,gm.content,gm.data,gm.created_at,gm.reply_to,gm.type_message
 	//  from grupo_message as gm where chat_id = 1 and gm.created_at >= $2
 }
 
-func(p *grupoRepo)UpdateUserGrupoLastTimeUpdateMessage(ctx context.Context,profileId int)(err error){
-	query :=`update user_grupo set last_update_messages = current_timestamp where profile_id = $1`
-	_,err = p.Conn.ExecContext(ctx,query,profileId)
-	return 
+func (p *grupoRepo) UpdateUserGrupoLastTimeUpdateMessage(ctx context.Context, profileId int) (err error) {
+	query := `update user_grupo set last_update_messages = current_timestamp where profile_id = $1`
+	_, err = p.Conn.ExecContext(ctx, query, profileId)
+	return
 }
 
-func (p *grupoRepo) SaveGrupoMessage(ctx context.Context, d *r.MessageGrupo) (err error) {
-	log.Println(d.CreatedAt,"CreatedAt Message")
+func (p *grupoRepo) SaveGrupoMessage(ctx context.Context, d *r.Message) (err error) {
+	log.Println(d.CreatedAt, "CreatedAt Message")
 	query := `insert into grupo_message (chat_id,profile_id,content,created_at,reply_to,type_message,data,grupo_id) 
 	values($1,$2,$3,current_timestamp,$4,$5,$6,$7) returning id,created_at`
 	err = p.Conn.QueryRowContext(ctx, query, d.ChatId, d.ProfileId, d.Content, d.ReplyTo,
-		d.TypeMessage, d.Data,d.ParentId).Scan(&d.Id, &d.CreatedAt)
+		d.TypeMessage, d.Data, d.ParentId).Scan(&d.Id, &d.CreatedAt)
 	if err != nil {
 		log.Println(err, "FAIL TO SAVE MESSAGE")
 	}
 	return
 }
 
-
-func (m *grupoRepo) fetchMessagesGrupo(ctx context.Context, query string, args ...interface{}) (res []r.MessageGrupo, err error) {
+func (m *grupoRepo) fetchMessagesGrupo(ctx context.Context, query string, args ...interface{}) (res []r.Message, err error) {
 	rows, err := m.Conn.QueryContext(ctx, query, args...)
 	if err != nil {
 		return nil, err
@@ -68,9 +67,9 @@ func (m *grupoRepo) fetchMessagesGrupo(ctx context.Context, query string, args .
 			log.Println(errRow)
 		}
 	}()
-	res = make([]r.MessageGrupo, 0)
+	res = make([]r.Message, 0)
 	for rows.Next() {
-		t := r.MessageGrupo{}
+		t := r.Message{}
 		err = rows.Scan(
 			&t.Id,
 			&t.ChatId,
@@ -92,9 +91,6 @@ func (m *grupoRepo) fetchMessagesGrupo(ctx context.Context, query string, args .
 	}
 	return res, nil
 }
-
-
-
 
 // func (m *grupoRepo) fetchMessagesGrupo(ctx context.Context, query string, args ...interface{}) (res []r.MessageGrupo, err error) {
 // 	rows, err := m.Conn.QueryContext(ctx, query, args...)

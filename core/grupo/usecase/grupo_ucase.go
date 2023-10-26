@@ -2,7 +2,7 @@ package usecase
 
 import (
 	"context"
-	"encoding/json"
+	"github.com/goccy/go-json"
 	"log"
 	r "message/domain/repository"
 	"time"
@@ -15,10 +15,10 @@ type grupoUcase struct {
 	timeout   time.Duration
 	grupoRepo r.GrupoRepository
 	kafkaW    *kafka.Writer
-	utilU r.UtilUseCase
+	utilU     r.UtilUseCase
 }
 
-func NewUseCase(timeout time.Duration, grupoRepo r.GrupoRepository,utilU r.UtilUseCase) r.GrupoUseCase {
+func NewUseCase(timeout time.Duration, grupoRepo r.GrupoRepository, utilU r.UtilUseCase) r.GrupoUseCase {
 	w := &kafka.Writer{
 		Addr:     kafka.TCP(viper.GetString("kafka.url")),
 		Topic:    "notification-message-group",
@@ -27,23 +27,23 @@ func NewUseCase(timeout time.Duration, grupoRepo r.GrupoRepository,utilU r.UtilU
 	return &grupoUcase{
 		timeout:   timeout,
 		grupoRepo: grupoRepo,
-		kafkaW: w,
-		utilU: utilU,
+		kafkaW:    w,
+		utilU:     utilU,
 	}
 }
-func (u *grupoUcase)GetChatUnreadMessage(ctx context.Context,chatId int64,lastUpdate string)(res []r.MessageGrupo,err error){
+func (u *grupoUcase) GetChatUnreadMessage(ctx context.Context, chatId int64, lastUpdate string) (res []r.Message, err error) {
 	ctx, cancel := context.WithTimeout(ctx, u.timeout)
 	defer cancel()
-	res,err = u.grupoRepo.GetChatUnreadMessage(ctx,chatId,lastUpdate)
-	if err != nil  {
-		u.utilU.LogError("GetChatUnreadMessage","grupo_usecase",err.Error())
+	res, err = u.grupoRepo.GetChatUnreadMessage(ctx, chatId, lastUpdate)
+	if err != nil {
+		u.utilU.LogError("GetChatUnreadMessage", "grupo_usecase", err.Error())
 		return
 	}
 	return
 }
 
-func (u *grupoUcase)GetUnreadMessages(ctx context.Context,profileId int,page int16,
-size int8)(res []r.MessageGrupo,nextPage int16,err error){
+func (u *grupoUcase) GetUnreadMessages(ctx context.Context, profileId int, page int16,
+	size int8) (res []r.Message, nextPage int16, err error) {
 	ctx, cancel := context.WithTimeout(ctx, u.timeout)
 	defer func() {
 		cancel()
@@ -51,31 +51,31 @@ size int8)(res []r.MessageGrupo,nextPage int16,err error){
 	page = u.utilU.PaginationValues(page)
 	res, err = u.grupoRepo.GetUnreadMessages(ctx, profileId, page, int8(size))
 	if err != nil {
-		u.utilU.LogError("SaveGrupoMessage","grupo_usecase",err.Error())
+		u.utilU.LogError("SaveGrupoMessage", "grupo_usecase", err.Error())
 	}
 	nextPage = u.utilU.GetNextPage(int8(len(res)), int8(size), page+1)
-	go u.UpdateUserGrupoLastTimeUpdateMessage(context.Background(),profileId)
+	go u.UpdateUserGrupoLastTimeUpdateMessage(context.Background(), profileId)
 	return
 }
 
-func (u *grupoUcase)UpdateUserGrupoLastTimeUpdateMessage(ctx context.Context,profileId int)(err error){
-	ctx,cancel := context.WithTimeout(ctx,u.timeout)
+func (u *grupoUcase) UpdateUserGrupoLastTimeUpdateMessage(ctx context.Context, profileId int) (err error) {
+	ctx, cancel := context.WithTimeout(ctx, u.timeout)
 	defer cancel()
-	err = u.grupoRepo.UpdateUserGrupoLastTimeUpdateMessage(ctx,profileId)
+	err = u.grupoRepo.UpdateUserGrupoLastTimeUpdateMessage(ctx, profileId)
 	if err != nil {
-		u.utilU.LogError("UpdateUserGrupoLastTimeUpdateMessage","grupo_ucase",err.Error())
+		u.utilU.LogError("UpdateUserGrupoLastTimeUpdateMessage", "grupo_ucase", err.Error())
 	}
 	return
 }
 
-func (u *grupoUcase) SaveGrupoMessage(ctx context.Context, d *r.MessageGrupo) (err error) {
+func (u *grupoUcase) SaveGrupoMessage(ctx context.Context, d *r.Message) (err error) {
 	ctx, cancel := context.WithTimeout(ctx, u.timeout)
 	defer func() {
 		cancel()
 	}()
 	err = u.grupoRepo.SaveGrupoMessage(ctx, d)
 	if err != nil {
-		u.utilU.LogError("SaveGrupoMessage","grupo_usecase",err.Error())
+		u.utilU.LogError("SaveGrupoMessage", "grupo_usecase", err.Error())
 		return
 	}
 	go func() {

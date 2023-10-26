@@ -4,7 +4,7 @@ import "context"
 
 type EstablecimientoConversation struct {
 	Name           string  `json:"name"`
-	Apellido       *string  `json:"apellido"`
+	Apellido       *string `json:"apellido"`
 	Photo          *string `json:"photo"`
 	ConversationId int     `json:"conversation_id"`
 	ProfileId      int     `json:"profile_id"`
@@ -18,19 +18,19 @@ type ConversationAdminUseCase interface {
 }
 
 type ConversationRepository interface {
-	SaveMessage(ctx context.Context, d *MessageGrupo) (err error)
+	SaveMessage(ctx context.Context, d *Message) (err error)
 	GetMessages(ctx context.Context, id int, page int16, size int8) ([]Inbox, error)
 	GetConversations(ctx context.Context, id int) ([]Conversation, error)
 
-	GetOrCreateConversation(ctx context.Context,id int,profileId int) (conversationId int,err error)
+	GetOrCreateConversation(ctx context.Context, id int, profileId int) (conversationId int, err error)
 }
 
 type ConversationUseCase interface {
-	SaveMessage(ctx context.Context, d *MessageGrupo) (err error)
-	GetMessages(ctx context.Context, id int, page int16,size int8) (res []Inbox,nextPage int16,err error)
-	GetConversations(ctx context.Context, id int) ([]Conversation,error)
-	
-	GetOrCreateConversation(ctx context.Context,id int,profileId int) (conversationId int,err error)
+	SaveMessage(ctx context.Context, d *Message) (err error)
+	GetMessages(ctx context.Context, id int, page int16, size int8) (res []Inbox, nextPage int16, err error)
+	GetConversations(ctx context.Context, id int) ([]Conversation, error)
+
+	GetOrCreateConversation(ctx context.Context, id int, profileId int) (conversationId int, err error)
 }
 
 type Conversation struct {
