@@ -14,13 +14,13 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-type ChatHandler struct {
+type SalaHandler struct {
 	grupoU r.SalaUseCase
 }
 
 func NewHandler(e *echo.Echo,salaUseCase r.SalaUseCase){
 	// go H.Run(salaUseCase)
-	handler := ChatHandler{
+	handler := SalaHandler{
 		grupoU: salaUseCase,
 	}
 	// e.GET("v1/ws/chat-grupo",handler.ChatGrupo)
@@ -30,7 +30,7 @@ func NewHandler(e *echo.Echo,salaUseCase r.SalaUseCase){
 
 
 
-func (h *ChatHandler)GetUnreadMessages(c echo.Context)(err error){
+func (h *SalaHandler)GetUnreadMessages(c echo.Context)(err error){
 	// auth := c.Request().Header["Authorization"][0]
 	// token := _jwt.GetToken(auth)
 	// claims, err := _jwt.ExtractClaims(token)
@@ -59,7 +59,7 @@ func (h *ChatHandler)GetUnreadMessages(c echo.Context)(err error){
 	return c.JSON(http.StatusOK, "response")
 }
 
-// func (ws *ChatHandler) ChatGrupo(c echo.Context) (err error) {
+// func (ws *SalaHandler) ChatGrupo(c echo.Context) (err error) {
 // 	casoId := c.QueryParam("id")
 // 	log.Println("chat grupo",casoId)
 // 	ServeWs(c.Response(), c.Request(), casoId)

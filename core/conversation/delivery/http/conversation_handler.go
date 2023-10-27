@@ -26,7 +26,31 @@ func NewHandler(e *echo.Echo, conversationUcase r.ConversationUseCase) {
 	// e.GET("v1/conversation/messages/:id/",handler.GetConversationMessages)
 	e.GET("v1/conversations/",handler.GetConversations)
 	e.GET("v1/conversation/get-id/:establecimientoId/",handler.GetOrCreateConversation)
+	e.POST("v1/conversation/update-messages/readed/",handler.UpdateMessagesToReaded)
 }
+
+func (h *ConversationHandler)UpdateMessagesToReaded(c echo.Context)(err error){
+	auth := c.Request().Header["Authorization"][0]
+	token := _jwt.GetToken(auth)
+	_, err = _jwt.ExtractClaims(token)
+	if err != nil {
+		return c.JSON(http.StatusUnauthorized, r.ResponseMessage{Message: err.Error()})
+	}
+	var data struct {Ids []int `json:"ids"`}
+	log.Println(data,"IDS")
+	err = c.Bind(&data)
+	if err != nil {
+		return c.JSON(http.StatusUnprocessableEntity, r.ResponseMessage{Message: err.Error()})
+	}
+	ctx := c.Request().Context()
+	err = h.conversationUcase.UpdateMessagesToReaded(ctx,data.Ids)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, r.ResponseMessage{Message: err.Error()})
+	}
+	return c.JSON(http.StatusOK,nil)
+}
+
+
 func (h *ConversationHandler)GetOrCreateConversation(c echo.Context)(err error){
 	auth := c.Request().Header["Authorization"][0]
 	token := _jwt.GetToken(auth)

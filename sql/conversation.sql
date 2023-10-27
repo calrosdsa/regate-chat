@@ -16,6 +16,7 @@ create table if not exists conversation_message(
   establecimiento_id int,
   data text,
   is_user boolean,
+  is_read boolean,
   CONSTRAINT fk_conversation
   FOREIGN KEY(chat_id) 
   REFERENCES chat(id)  on delete cascade

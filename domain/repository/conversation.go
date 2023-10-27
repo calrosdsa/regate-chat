@@ -8,14 +8,22 @@ type EstablecimientoConversation struct {
 	Photo          *string `json:"photo"`
 	ConversationId int     `json:"conversation_id"`
 	ProfileId      int     `json:"profile_id"`
-	ParentId   int `json:"parent_id"`
+	ParentId       int     `json:"parent_id"`
+}
+
+type ChatEstablecimiento struct {
+	Chat               EstablecimientoConversation `json:"chat"`
+	Message            Message                     `json:"message"`
+	CounUnreadMessages int                         `json:"count_unread_messages"`
 }
 
 type ConversationAdminRepository interface {
-	GetConversationsEstablecimiento(ctx context.Context, uuid string) ([]EstablecimientoConversation, error)
+	GetConversationsEstablecimiento(ctx context.Context, uuid string) ([]ChatEstablecimiento, error)
+	GetMessages(ctx context.Context,id int,page int16,size int8)([]Message,error)
 }
 type ConversationAdminUseCase interface {
-	GetConversationsEstablecimiento(ctx context.Context, uuid string) ([]EstablecimientoConversation, error)
+	GetConversationsEstablecimiento(ctx context.Context, uuid string) ([]ChatEstablecimiento, error)
+	GetMessages(ctx context.Context,id int,page int16,size int8)([]Message,int16,error)
 }
 
 type ConversationRepository interface {
@@ -24,6 +32,7 @@ type ConversationRepository interface {
 	GetConversations(ctx context.Context, id int) ([]Conversation, error)
 
 	GetOrCreateConversation(ctx context.Context, id int, profileId int) (conversationId int, err error)
+	UpdateMessageToReaded(ctx context.Context,id int)(err error)
 }
 
 type ConversationUseCase interface {
@@ -32,6 +41,7 @@ type ConversationUseCase interface {
 	GetConversations(ctx context.Context, id int) ([]Conversation, error)
 
 	GetOrCreateConversation(ctx context.Context, id int, profileId int) (conversationId int, err error)
+	UpdateMessagesToReaded(ctx context.Context,ids []int)(err error)
 }
 
 type Conversation struct {

@@ -19,16 +19,18 @@ type GrupoUseCase interface {
 
 type Message struct {
 	Id          int              `json:"id"`
-	LocalId     int64            `json:"local_id"`
-	ChatId      int              `json:"chat_id"`
-	ProfileId   int              `json:"profile_id"`
-	TypeMessage GrupoMessageType `json:"type_message"`
+	LocalId     int64            `json:"local_id,omitempty"`
+	ChatId      int              `json:"chat_id,omitempty"`
+	ProfileId   int              `json:"profile_id,omitempty"`
+	TypeMessage GrupoMessageType `json:"type_message,omitempty"`
 	Content     string           `json:"content"`
-	Data        *string          `json:"data"`
+	Data        *string          `json:"data,omitempty"`
 	CreatedAt   string           `json:"created_at,omitempty"`
-	ParentId    int              `json:"parent_id"`
-	IsUser      bool             `json:"is_user"`
-	ReplyTo     *int             `json:"reply_to"`
+	ParentId    int              `json:"parent_id,omitempty"`
+	ReplyTo     *int             `json:"reply_to,omitempty"`
+	//Only fon conversation message 
+	IsUser      bool             `json:"is_user,omitempty"`
+	IsRead      bool             `json:"is_read"`
 	// ReplyMessage ReplyMessage     `json:"reply_message"`
 }
 

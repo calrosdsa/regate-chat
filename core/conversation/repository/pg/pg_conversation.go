@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"log"
 	r "message/domain/repository"
+
 )
 
 type conversationRepo struct {
@@ -64,6 +65,11 @@ func (p *conversationRepo) GetConversations(ctx context.Context, id int) (res []
 	res, err = p.fetchConversations(ctx, query, id)
 	return
 }
+func(p *conversationRepo)UpdateMessageToReaded(ctx context.Context,id int)(err error){
+	query := `update conversation_message  set is_read = true where id = $1`
+	_,err = p.Conn.ExecContext(ctx,query,id)
+	return 
+}
 
 func (m *conversationRepo) fetchConversationMessages(ctx context.Context, query string, args ...interface{}) (res []r.Inbox, err error) {
 	rows, err := m.Conn.QueryContext(ctx, query, args...)
@@ -97,7 +103,8 @@ func (m *conversationRepo) fetchConversationMessages(ctx context.Context, query 
 	return res, nil
 }
 
-func (p *conversationRepo) fetchConversations(ctx context.Context, query string, args ...interface{}) (res []r.Conversation, err error) {
+func (p *conversationRepo) fetchConversations(ctx context.Context, query string,
+args ...interface{}) (res []r.Conversation, err error) {
 	rows, err := p.Conn.QueryContext(ctx, query, args...)
 	if err != nil {
 		return nil, err

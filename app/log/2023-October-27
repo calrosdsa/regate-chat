@@ -1,0 +1,27 @@
+time="2023-10-27T10:34:15-05:00" level=error msg="pq: relation \"messages\" does not exist" file=grupo_usecase method=SaveGrupoMessage
+time="2023-10-27T14:41:20-05:00" level=error msg="read tcp 172.20.20.76:52944->10.0.0.132:5432: wsarecv: A connection attempt failed because the connected party did not properly respond after a period of time, or established connection failed because connected host has failed to respond." file=grupo_usecase method=SaveGrupoMessage
+time="2023-10-27T14:41:22-05:00" level=error msg="read tcp 172.20.20.76:53993->10.0.0.132:5432: wsarecv: A connection attempt failed because the connected party did not properly respond after a period of time, or established connection failed because connected host has failed to respond." file=grupo_usecase method=SaveGrupoMessage
+time="2023-10-27T15:57:16-05:00" level=error msg="pq: insert or update on table \"sala_message\" violates foreign key constraint \"fk_sala\"" file=grupo_usecase method=SaveMessage
+time="2023-10-27T15:57:16-05:00" level=error msg="pq: insert or update on table \"sala_message\" violates foreign key constraint \"fk_sala\"" file=chat_usecase method=PublishMessage_SaveSalaMessage
+time="2023-10-27T15:57:51-05:00" level=error msg="pq: insert or update on table \"sala_message\" violates foreign key constraint \"fk_sala\"" file=grupo_usecase method=SaveMessage
+time="2023-10-27T15:57:51-05:00" level=error msg="pq: insert or update on table \"sala_message\" violates foreign key constraint \"fk_sala\"" file=chat_usecase method=PublishMessage_SaveSalaMessage
+time="2023-10-27T15:57:55-05:00" level=error msg="pq: insert or update on table \"sala_message\" violates foreign key constraint \"fk_sala\"" file=grupo_usecase method=SaveMessage
+time="2023-10-27T15:57:56-05:00" level=error msg="pq: insert or update on table \"sala_message\" violates foreign key constraint \"fk_sala\"" file=chat_usecase method=PublishMessage_SaveSalaMessage
+time="2023-10-27T15:58:25-05:00" level=error msg="pq: insert or update on table \"sala_message\" violates foreign key constraint \"fk_sala\"" file=grupo_usecase method=SaveMessage
+time="2023-10-27T15:58:25-05:00" level=error msg="pq: insert or update on table \"sala_message\" violates foreign key constraint \"fk_sala\"" file=chat_usecase method=PublishMessage_SaveSalaMessage
+time="2023-10-27T15:59:15-05:00" level=error msg="pq: insert or update on table \"sala_message\" violates foreign key constraint \"fk_sala\"" file=grupo_usecase method=SaveMessage
+time="2023-10-27T15:59:15-05:00" level=error msg="pq: insert or update on table \"sala_message\" violates foreign key constraint \"fk_sala\"" file=chat_usecase method=PublishMessage_SaveSalaMessage
+time="2023-10-27T16:02:49-05:00" level=error msg="pq: insert or update on table \"sala_message\" violates foreign key constraint \"fk_sala\"" file=grupo_usecase method=SaveMessage
+time="2023-10-27T16:02:49-05:00" level=error msg="pq: insert or update on table \"sala_message\" violates foreign key constraint \"fk_sala\"" file=chat_usecase method=PublishMessage_SaveSalaMessage
+time="2023-10-27T16:02:52-05:00" level=error msg="pq: insert or update on table \"sala_message\" violates foreign key constraint \"fk_sala\"" file=grupo_usecase method=SaveMessage
+time="2023-10-27T16:02:52-05:00" level=error msg="pq: insert or update on table \"sala_message\" violates foreign key constraint \"fk_sala\"" file=chat_usecase method=PublishMessage_SaveSalaMessage
+time="2023-10-27T16:02:54-05:00" level=error msg="pq: insert or update on table \"sala_message\" violates foreign key constraint \"fk_sala\"" file=grupo_usecase method=SaveMessage
+time="2023-10-27T16:02:54-05:00" level=error msg="pq: insert or update on table \"sala_message\" violates foreign key constraint \"fk_sala\"" file=chat_usecase method=PublishMessage_SaveSalaMessage
+time="2023-10-27T16:03:18-05:00" level=error msg="pq: insert or update on table \"sala_message\" violates foreign key constraint \"fk_sala\"" file=grupo_usecase method=SaveMessage
+time="2023-10-27T16:03:18-05:00" level=error msg="pq: insert or update on table \"sala_message\" violates foreign key constraint \"fk_sala\"" file=chat_usecase method=PublishMessage_SaveSalaMessage
+time="2023-10-27T16:03:21-05:00" level=error msg="pq: insert or update on table \"sala_message\" violates foreign key constraint \"fk_sala\"" file=grupo_usecase method=SaveMessage
+time="2023-10-27T16:03:21-05:00" level=error msg="pq: insert or update on table \"sala_message\" violates foreign key constraint \"fk_sala\"" file=chat_usecase method=PublishMessage_SaveSalaMessage
+time="2023-10-27T16:03:28-05:00" level=error msg="pq: insert or update on table \"sala_message\" violates foreign key constraint \"fk_sala\"" file=grupo_usecase method=SaveMessage
+time="2023-10-27T16:03:28-05:00" level=error msg="pq: insert or update on table \"sala_message\" violates foreign key constraint \"fk_sala\"" file=chat_usecase method=PublishMessage_SaveSalaMessage
+time="2023-10-27T16:03:42-05:00" level=error msg="pq: insert or update on table \"sala_message\" violates foreign key constraint \"fk_sala\"" file=grupo_usecase method=SaveMessage
+time="2023-10-27T16:03:42-05:00" level=error msg="pq: insert or update on table \"sala_message\" violates foreign key constraint \"fk_sala\"" file=chat_usecase method=PublishMessage_SaveSalaMessage
