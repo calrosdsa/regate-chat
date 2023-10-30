@@ -2,8 +2,8 @@ package usecase
 
 import (
 	"context"
-	"github.com/goccy/go-json"
-	"log"
+	// "github.com/goccy/go-json"
+	// "log"
 	r "message/domain/repository"
 	"time"
 
@@ -67,6 +67,13 @@ func (u *grupoUcase) UpdateUserGrupoLastTimeUpdateMessage(ctx context.Context, p
 	}
 	return
 }
+func (u *grupoUcase) DeleteMessage(ctx context.Context,id int) (err error) {
+	ctx, cancel := context.WithTimeout(ctx, u.timeout)
+	defer cancel()
+	err = u.grupoRepo.DeleteMessage(ctx, id)
+	return
+}
+
 
 func (u *grupoUcase) SaveGrupoMessage(ctx context.Context, d *r.Message) (err error) {
 	ctx, cancel := context.WithTimeout(ctx, u.timeout)
@@ -78,20 +85,22 @@ func (u *grupoUcase) SaveGrupoMessage(ctx context.Context, d *r.Message) (err er
 		u.utilU.LogError("SaveGrupoMessage", "grupo_usecase", err.Error())
 		return
 	}
-	go func() {
-		json, err := json.Marshal(d)
-		if err != nil {
-			log.Println("Fail to parse", err)
-		}
-		err = u.kafkaW.WriteMessages(context.Background(),
-			kafka.Message{
-				Key:   []byte("Message"),
-				Value: json,
-			},
-		)
-		if err != nil {
-			log.Println("failed to write messages:", err)
-		}
-	}()
+	go u.utilU.SendMessageToKafka(u.kafkaW,d,"Message")
+
+	// go func() {
+	// 	json, err := json.Marshal(d)
+	// 	if err != nil {
+	// 		log.Println("Fail to parse", err)
+	// 	}
+	// 	err = u.kafkaW.WriteMessages(context.Background(),
+	// 		kafka.Message{
+	// 			Key:   []byte("Message"),
+	// 			Value: json,
+	// 		},
+	// 	)
+	// 	if err != nil {
+	// 		log.Println("failed to write messages:", err)
+	// 	}
+	// }()
 	return
 }

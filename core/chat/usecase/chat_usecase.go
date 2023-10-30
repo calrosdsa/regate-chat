@@ -9,6 +9,8 @@ import (
 	"time"
 
 	"github.com/goccy/go-json"
+	"github.com/segmentio/kafka-go"
+	"github.com/spf13/viper"
 	// "github.com/segmentio/kafka-go"
 )
 
@@ -19,6 +21,7 @@ type chatUseCase struct {
 	grupoU        r.GrupoUseCase
 	salaU         r.SalaUseCase
 	wsServer      *ws.WsServer
+	kafkaW       *kafka.Writer
 	conversationU r.ConversationUseCase
 
 	// kafkaW           *kafka.Writer
@@ -27,11 +30,13 @@ type chatUseCase struct {
 func NewUseCase(timeout time.Duration, charRepo r.ChatRepository, utilU r.UtilUseCase,
 	grupoU r.GrupoUseCase, conversationU r.ConversationUseCase,
 	salaU r.SalaUseCase, wsServer *ws.WsServer) r.ChatUseCase {
-	// w := &kafka.Writer{
-	// 	Addr:     kafka.TCP("localhost:9094"),
-	// 	Topic:    "notification-message-group",
-	// 	Balancer: &kafka.LeastBytes{},
-	// }
+
+	w := &kafka.Writer{
+		Addr:     kafka.TCP(viper.GetString("kafka.host")),
+		Topic:    "notify-ws",
+		Balancer: &kafka.LeastBytes{},
+	}
+	
 	return &chatUseCase{
 		timeout:       timeout,
 		chatRepo:      charRepo,
@@ -39,7 +44,7 @@ func NewUseCase(timeout time.Duration, charRepo r.ChatRepository, utilU r.UtilUs
 		grupoU:        grupoU,
 		salaU:         salaU,
 		conversationU: conversationU,
-		// kafkaW:           w,
+		kafkaW:           w,
 		utilU: utilU,
 	}
 }
@@ -135,6 +140,37 @@ func (u *chatUseCase) PublishMessage(ctx context.Context, msg r.MessagePublishRe
 	return
 }
 
+func (u *chatUseCase) DeleteMessage(ctx context.Context,d r.DeleteMessageRequet) (err error) {
+	ctx, cancel := context.WithTimeout(ctx, u.timeout)
+	defer cancel()
+	switch d.TypeChat{
+	case r.TypeChatGrupo:
+		err = u.grupoU.DeleteMessage(ctx, d.Id)
+		if err != nil {
+			u.utilU.LogError("Grupo_DeleteMessage", "chat_usecase", err.Error())
+			return
+		}
+		
+	}
+	err = u.chatRepo.DeleteMessage(ctx,d.Id,d.ChatId)
+	if err != nil {
+		u.utilU.LogError("DeleteMessage", "chat_usecase", err.Error())
+	}
+	paylaodData,err := json.Marshal(struct {Id int `json:"id"`}{Id: d.Id})
+	event := r.MessageEvent{
+		Type:   r.EventTypeDeletedMessage,
+		Payload: string(paylaodData),
+	}
+	payload, err := json.Marshal(event)
+	if err != nil {
+		u.utilU.LogError("PublisMessage3_Marshal", "chat_usecase", err.Error())
+		return 
+	}
+	go u.utilU.SendMessageToKafka(u.kafkaW,d,"delete-message")
+	u.wsServer.Publish(payload,d.ChatId)
+	return
+}
+
 func (u *chatUseCase) GetChatsUser(ctx context.Context, profileId int, page int16, size int8) (res []r.Chat,
 	nextPage int16, err error) {
 	ctx, cancel := context.WithTimeout(ctx, u.timeout)
@@ -145,5 +181,13 @@ func (u *chatUseCase) GetChatsUser(ctx context.Context, profileId int, page int1
 		u.utilU.LogError("GetChatUser", "chat_usecase", err.Error())
 	}
 	nextPage = u.utilU.GetNextPage(int8(len(res)), int8(size), page+1)
+	return
+}
+
+
+func (u *chatUseCase) GetDeletedMessages(ctx context.Context,id int) (res []int,err error) {
+	ctx, cancel := context.WithTimeout(ctx, u.timeout)
+	defer cancel()
+	res,err = u.chatRepo.GetDeletedMessages(ctx,id)
 	return
 }

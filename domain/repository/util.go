@@ -1,5 +1,8 @@
 package repository
 
+import (
+	"github.com/segmentio/kafka-go"
+)
 
 type UtilUseCase interface {
 	PaginationValues(page int16) int16
@@ -8,4 +11,5 @@ type UtilUseCase interface {
 	LogInfo(method string, file string, err string)
 	CustomLog(method string, file string, err string, payload map[string]interface{})
 	LogFatal(method string, file string, err string, payload map[string]interface{})
+	SendMessageToKafka(w *kafka.Writer,data interface{},key string)
 }

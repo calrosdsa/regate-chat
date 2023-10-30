@@ -1,13 +1,17 @@
 package usecase
 
 import (
+	"context"
 	"fmt"
 	"log"
-	"os"
 	r "message/domain/repository"
+	"os"
 	"strconv"
 	"time"
 
+	"github.com/goccy/go-json"
+
+	"github.com/segmentio/kafka-go"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 )
@@ -19,6 +23,21 @@ func NewUseCase()r.UtilUseCase{
 	return &utilUseCase{}
 }
 
+func (u *utilUseCase)SendMessageToKafka(w *kafka.Writer,data interface{},key string){
+	json, err := json.Marshal(data)
+		if err != nil {
+			log.Println("Fail to parse", err)
+		}
+		err = w.WriteMessages(context.Background(),
+			kafka.Message{
+				Key:   []byte(key),
+				Value: json,
+			},
+		)
+		if err != nil {
+			u.LogError("SendMessageToKafka","util_usecase",err.Error())
+		}
+}
 
 func (u *utilUseCase)LogError(method string,file string,err string){
 	now := time.Now()

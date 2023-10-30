@@ -31,7 +31,30 @@ func NewHandler(e *echo.Echo, chatUseCase r.ChatUseCase) {
 	e.GET("v1/chats/",handler.GetChatsUser)
 	e.POST("v1/chat/publish/message/",handler.PublishMessage)
 	e.POST("v1/chat/unread-messages/",handler.GetChatUnreadMessages)
+	e.POST("v1/chat/delete/message/",handler.DeleteMessage)
+	e.GET("v1/chat/deleted/messages/:id/",handler.GetDeletedMessages)
+
 }
+func (h *ChatHandler)DeleteMessage(c echo.Context)(err error){
+	auth := c.Request().Header["Authorization"][0]
+	token := _jwt.GetToken(auth)
+	_, err = _jwt.ExtractClaims(token)
+	if err != nil {
+		return c.JSON(http.StatusUnauthorized, r.ResponseMessage{Message: err.Error()})
+	}
+	var data r.DeleteMessageRequet
+	err = c.Bind(&data)
+	if err != nil {
+		return c.JSON(http.StatusUnauthorized, r.ResponseMessage{Message: err.Error()})
+	}
+	ctx := c.Request().Context()
+	err = h.chatUseCase.DeleteMessage(ctx,data)
+	if err != nil {
+		return c.JSON(http.StatusUnauthorized, r.ResponseMessage{Message: err.Error()})
+	}
+	return c.JSON(http.StatusOK,nil)
+}
+
 func (h *ChatHandler) GetChatUnreadMessages(c echo.Context)(err error) {
 	var data r.RequestChatUnreadMessages
 	err = c.Bind(&data)
@@ -48,6 +71,26 @@ func (h *ChatHandler) GetChatUnreadMessages(c echo.Context)(err error) {
 	}
 	return c.JSON(http.StatusOK,res)
 }
+
+func (h *ChatHandler) GetDeletedMessages(c echo.Context)(err error) {
+	id,err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		return c.JSON(http.StatusUnprocessableEntity, r.ResponseMessage{Message: err.Error()})
+	}
+	ctx := c.Request().Context()
+	res,err := h.chatUseCase.GetDeletedMessages(ctx,id)
+	if err != nil {
+		// log.Println("SYNC error",err)
+		return c.JSON(http.StatusBadRequest, r.ResponseMessage{Message: err.Error()})
+	}
+	response := struct {
+		Ids []int `json:"ids"`
+	}{
+		Ids: res,
+	}
+	return c.JSON(http.StatusOK,response)
+}
+
 
 // func (h *ChatHandler) SyncMessages(c echo.Context)(err error) {
 // 	var data []r.MessagePublishRequest

@@ -20,7 +20,7 @@ func NewRepository(conn *sql.DB) r.ConversationRepository {
 
 func (p *conversationRepo) GetOrCreateConversation(ctx context.Context, id int, profileId int) (conversationId int, err error) {
 	var query string
-	query = `select id from chat where second_parent_id = $1 and establecimiento_id = $2`
+	query = `select id from chat where second_parent_id = $1 and parent_id = $2`
 	err = p.Conn.QueryRowContext(ctx, query, profileId, id).Scan(&conversationId)
 	if err != nil {
 		log.Println("Creando conversation")
@@ -69,6 +69,11 @@ func(p *conversationRepo)UpdateMessageToReaded(ctx context.Context,id int)(err e
 	query := `update conversation_message  set is_read = true where id = $1`
 	_,err = p.Conn.ExecContext(ctx,query,id)
 	return 
+}
+func (p *conversationRepo)DeleteMessage(ctx context.Context,id int )(err error){
+	query := `update conversation_message set is_deleted = true where id = $1`
+	_,err = p.Conn.ExecContext(ctx,query,id)
+	return
 }
 
 func (m *conversationRepo) fetchConversationMessages(ctx context.Context, query string, args ...interface{}) (res []r.Inbox, err error) {

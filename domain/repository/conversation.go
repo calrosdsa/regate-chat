@@ -33,6 +33,7 @@ type ConversationRepository interface {
 
 	GetOrCreateConversation(ctx context.Context, id int, profileId int) (conversationId int, err error)
 	UpdateMessageToReaded(ctx context.Context,id int)(err error)
+	DeleteMessage(ctx context.Context,id int)(err error)
 }
 
 type ConversationUseCase interface {
@@ -42,6 +43,7 @@ type ConversationUseCase interface {
 
 	GetOrCreateConversation(ctx context.Context, id int, profileId int) (conversationId int, err error)
 	UpdateMessagesToReaded(ctx context.Context,ids []int)(err error)
+	DeleteMessage(ctx context.Context,id int)(err error)
 }
 
 type Conversation struct {

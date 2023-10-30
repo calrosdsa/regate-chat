@@ -2,8 +2,8 @@ package usecase
 
 import (
 	"context"
-	"encoding/json"
-	"log"
+	// "encoding/json"
+	// "log"
 	r "message/domain/repository"
 	"time"
 
@@ -38,6 +38,7 @@ func (u *conversationUCase) GetOrCreateConversation(ctx context.Context, id int,
 	return
 }
 
+
 func (u *conversationUCase) GetConversations(ctx context.Context, id int) (res []r.Conversation, err error) {
 	ctx, cancel := context.WithTimeout(ctx, u.timeout)
 	defer cancel()
@@ -69,21 +70,22 @@ func (u *conversationUCase) SaveMessage(ctx context.Context, d *r.Message) (err 
 	if err != nil {
 		u.utilU.LogError("SaveMessage","conversation_usecase",err.Error())
 	}
-	go func() {
-		json, err := json.Marshal(d)
-		if err != nil {
-			log.Println("Fail to parse", err)
-		}
-		err = u.kafkaW.WriteMessages(context.Background(),
-			kafka.Message{
-				Key:   []byte("Message"),
-				Value: json,
-			},
-		)
-		if err != nil {
-			log.Println("failed to write messages:", err)
-		}
-	}()
+	go u.utilU.SendMessageToKafka(u.kafkaW,d,"Message")
+	// go func() {
+	// 	json, err := json.Marshal(d)
+	// 	if err != nil {
+	// 		log.Println("Fail to parse", err)
+	// 	}
+	// 	err = u.kafkaW.WriteMessages(context.Background(),
+	// 		kafka.Message{
+	// 			Key:   []byte("Message"),
+	// 			Value: json,
+	// 		},
+	// 	)
+	// 	if err != nil {
+	// 		log.Println("failed to write messages:", err)
+	// 	}
+	// }()
 	return
 }
 
@@ -99,3 +101,11 @@ func (u *conversationUCase)UpdateMessagesToReaded(ctx context.Context,ids []int)
 	}
 	return
 }
+
+func (u *conversationUCase)DeleteMessage(ctx context.Context,id int)(err error){
+	ctx,cancel := context.WithTimeout(ctx,u.timeout)
+	defer cancel()
+	err = u.conversationRepo.DeleteMessage(ctx,id)
+	return
+}
+

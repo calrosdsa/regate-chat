@@ -20,7 +20,7 @@ func NewAdminRepository(conn *sql.DB) r.ConversationAdminRepository {
 func (p *conversationAdminRepo) GetMessages(ctx context.Context, profileId int, page int16,
 	size int8) (res []r.Message, err error) {
 	query := `select  m.id,m.chat_id,m.profile_id,m.content,m.data,m.created_at,m.reply_to,
-	m.type_message,m.is_user,m.is_read
+	m.type_message,m.is_user,m.is_read,m.is_deleted
 	from conversation_message as m where m.chat_id = $1 
 	order by created_at desc limit $2 offset $3`
 	res, err = p.fetchMessages(ctx, query, profileId, size, page*int16(size))
@@ -29,7 +29,7 @@ func (p *conversationAdminRepo) GetMessages(ctx context.Context, profileId int, 
 
 func (p *conversationAdminRepo) GetConversationsEstablecimiento(ctx context.Context,uuid string) (res []r.ChatEstablecimiento,err error) {
 	query := `select p.nombre,p.apellido,p.profile_photo,c.id,p.profile_id,c.parent_id,
-	cm.content,cm.created_at,
+	coalesce(cm.content,''),coalesce(cm.created_at,current_timestamp),
 	(select count(*) from conversation_message where c.id = chat_id and is_read = false)
 	from chat as c left join lateral 
 	(select m.content,m.created_at from conversation_message as m 
@@ -68,6 +68,7 @@ func (m *conversationAdminRepo) fetchMessages(ctx context.Context, query string,
 			&t.TypeMessage,
 			&t.IsUser,
 			&t.IsRead,
+			&t.IsDeleted,
 			// &t.ReplyMessage.Id,
 			// &t.ReplyMessage.GrupoId,
 			// &t.ReplyMessage.ProfileId,

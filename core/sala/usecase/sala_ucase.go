@@ -2,8 +2,8 @@ package usecase
 
 import (
 	"context"
-	"encoding/json"
-	"log"
+	// "encoding/json"
+	// "log"
 	r "message/domain/repository"
 	"time"
 
@@ -54,20 +54,21 @@ func (u *salaUcase) SaveMessage(ctx context.Context, d *r.Message) (err error) {
 		u.utilU.LogError("SaveMessage", "grupo_usecase", err.Error())
 		return
 	}
-	go func() {
-		json, err := json.Marshal(d)
-		if err != nil {
-			log.Println("Fail to parse", err)
-		}
-		err = u.kafkaW.WriteMessages(context.Background(),
-			kafka.Message{
-				Key:   []byte("Message"),
-				Value: json,
-			},
-		)
-		if err != nil {
-			log.Println("failed to write messages:", err)
-		}
-	}()
+	go u.utilU.SendMessageToKafka(u.kafkaW,d,"Message")
+	// go func() {
+	// 	json, err := json.Marshal(d)
+	// 	if err != nil {
+	// 		log.Println("Fail to parse", err)
+	// 	}
+	// 	err = u.kafkaW.WriteMessages(context.Background(),
+	// 		kafka.Message{
+	// 			Key:   []byte("Message"),
+	// 			Value: json,
+	// 		},
+	// 	)
+	// 	if err != nil {
+	// 		log.Println("failed to write messages:", err)
+	// 	}
+	// }()
 	return
 }

@@ -53,6 +53,43 @@ err error){
 	return
 }
 
+func (p *chatRepo)DeleteMessage(ctx context.Context,id int,chatId int)(err error){
+	query := `insert into deleted_message(id,chat_id) values($1,$2)`
+	_,err = p.Conn.ExecContext(ctx,query,id,chatId)
+	return
+}
+
+func (p *chatRepo)GetDeletedMessages(ctx context.Context,id int)(res []int,err error){
+	query := `select id from deleted_message where chat_id = $1 order by created_at desc  limit 50`
+	res,err = p.fetchIds(ctx,query,id)
+	return
+}
+
+func (p *chatRepo) fetchIds(ctx context.Context, query string, args ...interface{}) (res []int, err error) {
+	rows, err := p.Conn.QueryContext(ctx, query, args...)
+	if err != nil {
+		return nil, err
+	}
+	defer func() {
+		errRow := rows.Close()
+		if errRow != nil {
+			log.Println(errRow)
+		}
+	}()
+	res = make([]int, 0)
+	for rows.Next() {
+		t := 0
+		err = rows.Scan(
+			&t,
+		)
+		if err != nil {
+			log.Println(err)
+			return nil, err
+		}
+		res = append(res, t)
+	}
+	return res, nil
+}
 
 func (p *chatRepo) fetchChats(ctx context.Context, query string, args ...interface{}) (res []r.Chat, err error) {
 	rows, err := p.Conn.QueryContext(ctx, query, args...)

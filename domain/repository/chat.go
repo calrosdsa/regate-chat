@@ -24,14 +24,26 @@ type ChatUseCase interface {
 		nextPage int16, err error)
 	PublishMessage(ctx context.Context, msg MessagePublishRequest) (res int, err error)
 	GetChatUnreadMessages(ctx context.Context, d RequestChatUnreadMessages) (res []Message, err error)
+
+	DeleteMessage(ctx context.Context, d DeleteMessageRequet) (err error)
+	GetDeletedMessages(ctx context.Context, id int) (res []int, err error)
 }
 
 type ChatRepository interface {
 	GetChatsUser(ctx context.Context, profileId int, page int16, size int8) (res []Chat, err error)
+	DeleteMessage(ctx context.Context, id int, chatId int) (err error)
+	GetDeletedMessages(ctx context.Context, id int) (res []int, err error)
+}
+
+type DeleteMessageRequet struct {
+	Id       int      `json:"id"`
+	Ids      []int `json:"ids"`
+	ChatId   int      `json:"chat_id"`
+	TypeChat TypeChat `json:"type_chat"`
 }
 
 type Chat struct {
-	Id                 int     `json:"id"`
+	Id                 int      `json:"id"`
 	Photo              *string  `json:"photo"`
 	Name               string   `json:"name"`
 	LastMessage        *string  `json:"last_message,omitempty"`
@@ -41,10 +53,22 @@ type Chat struct {
 	ParentId           int      `json:"parent_id"`
 }
 
+type WskafkaPayload struct {
+	Payload string             `json:"payload"`
+	Type    WskafkaPayloadType `json:"type"`
+}
+type WskafkaPayloadType int8
+
+const (
+	WsKafkaTypeDeleteMessage = 1
+)
+
 type MessageEventType string
 
 const (
 	EventTypeMessage MessageEventType = "message"
+	EventTypeDeletedMessage MessageEventType = "delete-message"
+
 )
 
 type TypeChat int8

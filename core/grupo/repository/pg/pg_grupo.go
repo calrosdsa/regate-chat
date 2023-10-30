@@ -18,18 +18,22 @@ func NewRepository(conn *sql.DB) r.GrupoRepository {
 		Conn: conn,
 	}
 }
-
+func (p *grupoRepo)DeleteMessage(ctx context.Context,id int)(err error){
+	query := `update grupo_message set is_deleted = true where id = $1`
+	_,err = p.Conn.ExecContext(ctx,query,id)
+	return 
+}
 func (p *grupoRepo) GetUnreadMessages(ctx context.Context, profileId int, page int16,
 	size int8) (res []r.Message, err error) {
-	query := `select  gm.id,gm.chat_id,gm.profile_id,gm.content,gm.data,gm.created_at,gm.reply_to,gm.type_message
-	from user_grupo as ug inner join grupo_message as gm on gm.grupo_id = ug.grupo_id 
+	query := `select  gm.id,gm.chat_id,gm.profile_id,gm.content,gm.data,gm.created_at,gm.reply_to,gm.type_message,
+	gm.is_deleted from user_grupo as ug inner join grupo_message as gm on gm.grupo_id = ug.grupo_id 
 	and ug.last_update_messages <= gm.created_at where ug.profile_id = $1 
 	limit $2 offset $3`
 	res, err = p.fetchMessagesGrupo(ctx, query, profileId, size, page*int16(size))
 	return
 }
 func (p *grupoRepo) GetChatUnreadMessage(ctx context.Context, chatId int64, lastUpdated string) (res []r.Message, err error) {
-	query := `select gm.id,gm.chat_id,gm.profile_id,gm.content,gm.data,gm.created_at,gm.reply_to,gm.type_message
+	query := `select gm.id,gm.chat_id,gm.profile_id,gm.content,gm.data,gm.created_at,gm.reply_to,gm.type_message,gm.is_deleted
 	 from grupo_message as gm where chat_id = $1 and gm.created_at >= $2`
 	res, err = p.fetchMessagesGrupo(ctx, query, chatId, lastUpdated)
 	return
@@ -56,6 +60,7 @@ func (p *grupoRepo) SaveGrupoMessage(ctx context.Context, d *r.Message) (err err
 	return
 }
 
+
 func (m *grupoRepo) fetchMessagesGrupo(ctx context.Context, query string, args ...interface{}) (res []r.Message, err error) {
 	rows, err := m.Conn.QueryContext(ctx, query, args...)
 	if err != nil {
@@ -79,6 +84,7 @@ func (m *grupoRepo) fetchMessagesGrupo(ctx context.Context, query string, args .
 			&t.CreatedAt,
 			&t.ReplyTo,
 			&t.TypeMessage,
+			&t.IsDeleted,
 			// &t.ReplyMessage.Id,
 			// &t.ReplyMessage.GrupoId,
 			// &t.ReplyMessage.ProfileId,
