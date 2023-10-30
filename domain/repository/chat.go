@@ -15,7 +15,7 @@ type MessageEvent struct {
 }
 
 type RequestChatUnreadMessages struct {
-	ChatId         int64    `json:"chat_id"`
+	ChatId         int    `json:"chat_id"`
 	LastUpdateChat string   `json:"last_update_chat"`
 	TypeChat       TypeChat `json:"type_chat"`
 }

@@ -59,7 +59,23 @@ func (u *chatUseCase) GetChatUnreadMessages(ctx context.Context, d r.RequestChat
 			return
 		}
 		return
+	case r.TypeChatInboxEstablecimiento:
+		res,err = u.conversationU.GetChatUnreadMessages(ctx,d.ChatId,d.LastUpdateChat)	
+		if err != nil {
+			u.utilU.LogError("GetChatUnreadMessages_Conversation", "chat_usecase", err.Error())
+			return
+		}
+		return
+	case r.TypeChatSala:
+		res,err = u.salaU.GetChatUnreadMessages(ctx,d.ChatId,d.LastUpdateChat)	
+		if err != nil {
+			u.utilU.LogError("GetChatUnreadMessages_Sala", "chat_usecase", err.Error())
+			return
+		}
+		return
+	
 	}
+	
 	return
 }
 
@@ -150,7 +166,18 @@ func (u *chatUseCase) DeleteMessage(ctx context.Context,d r.DeleteMessageRequet)
 			u.utilU.LogError("Grupo_DeleteMessage", "chat_usecase", err.Error())
 			return
 		}
-		
+	case r.TypeChatInboxEstablecimiento:
+		err = u.conversationU.DeleteMessage(ctx,d.Id)
+		if err != nil {
+			u.utilU.LogError("Conversation_DeleteMessage", "chat_usecase", err.Error())
+			return
+		}	
+	case r.TypeChatSala:
+		err = u.salaU.DeleteMessage(ctx,d.Id)
+		if err != nil {
+			u.utilU.LogError("Sala_DeleteMessage", "chat_usecase", err.Error())
+			return
+		}	
 	}
 	err = u.chatRepo.DeleteMessage(ctx,d.Id,d.ChatId)
 	if err != nil {

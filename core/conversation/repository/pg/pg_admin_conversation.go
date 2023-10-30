@@ -18,11 +18,14 @@ func NewAdminRepository(conn *sql.DB) r.ConversationAdminRepository {
 	}
 }
 func (p *conversationAdminRepo) GetMessages(ctx context.Context, profileId int, page int16,
-	size int8) (res []r.Message, err error) {
+	size int8) (res []r.MessageWithReply, err error) {
 	query := `select  m.id,m.chat_id,m.profile_id,m.content,m.data,m.created_at,m.reply_to,
-	m.type_message,m.is_user,m.is_read,m.is_deleted
-	from conversation_message as m where m.chat_id = $1 
-	order by created_at desc limit $2 offset $3`
+	m.type_message,m.is_user,m.is_read,m.is_deleted,cm.id,cm.content,cm.data,cm.created_at,
+	cm.type_message
+	from conversation_message as m 
+	left join conversation_message as cm on cm.id = m.reply_to
+	where m.chat_id = $1 
+	order by m.created_at desc limit $2 offset $3`
 	res, err = p.fetchMessages(ctx, query, profileId, size, page*int16(size))
 	return
 }
@@ -43,7 +46,14 @@ func (p *conversationAdminRepo) GetConversationsEstablecimiento(ctx context.Cont
 	return
 }
 
-func (m *conversationAdminRepo) fetchMessages(ctx context.Context, query string, args ...interface{}) (res []r.Message, err error) {
+func (p *conversationAdminRepo)GetConversationsMessagesCount(ctx context.Context,uuid string)(res int,err error){
+	query := `select count(*) from conversation_message where establecimiento_id = 
+	(select establecimiento_id from establecimientos where uuid = $1) and is_read = false`
+	err = p.Conn.QueryRowContext(ctx,query,uuid).Scan(&res)
+	return
+}
+
+func (m *conversationAdminRepo) fetchMessages(ctx context.Context, query string, args ...interface{}) (res []r.MessageWithReply, err error) {
 	rows, err := m.Conn.QueryContext(ctx, query, args...)
 	if err != nil {
 		return nil, err
@@ -54,9 +64,9 @@ func (m *conversationAdminRepo) fetchMessages(ctx context.Context, query string,
 			log.Println(errRow)
 		}
 	}()
-	res = make([]r.Message, 0)
+	res = make([]r.MessageWithReply, 0)
 	for rows.Next() {
-		t := r.Message{}
+		t := r.MessageWithReply{}
 		err = rows.Scan(
 			&t.Id,
 			&t.ChatId,
@@ -69,12 +79,11 @@ func (m *conversationAdminRepo) fetchMessages(ctx context.Context, query string,
 			&t.IsUser,
 			&t.IsRead,
 			&t.IsDeleted,
-			// &t.ReplyMessage.Id,
-			// &t.ReplyMessage.GrupoId,
-			// &t.ReplyMessage.ProfileId,
-			// &t.ReplyMessage.Content,
-			// &t.ReplyMessage.CreatedAt,
-			// &t.ReplyMessage.TypeMessage,
+			&t.ReplyMessage.Id,
+			&t.ReplyMessage.Content,
+			&t.ReplyMessage.Data,
+			&t.ReplyMessage.CreatedAt,
+			&t.ReplyMessage.TypeMessage,
 			// &t.ReplyMessage.Data,
 		)
 		res = append(res, t)

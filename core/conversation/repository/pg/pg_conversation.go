@@ -42,7 +42,7 @@ func (p *conversationRepo) SaveMessage(ctx context.Context,d *r.Message) (err er
 	query := `insert into conversation_message (chat_id,profile_id,content,created_at,reply_to,
 	type_message,data,establecimiento_id,is_user) 
 	values($1,$2,$3,current_timestamp,$4,$5,$6,$7,$8) returning id,created_at`
-	err = p.Conn.QueryRowContext(ctx, query, d.ChatId, d.ProfileId, d.Content, d.ReplyTo,
+	err =p.Conn.QueryRowContext(ctx, query, d.ChatId, d.ProfileId, d.Content, d.ReplyTo,
 		d.TypeMessage, d.Data, d.ParentId,d.IsUser).Scan(&d.Id, &d.CreatedAt)
 	if err != nil {
 		log.Println(err, "FAIL TO SAVE MESSAGE")
@@ -50,15 +50,7 @@ func (p *conversationRepo) SaveMessage(ctx context.Context,d *r.Message) (err er
 	return
 }
 
-func (p *conversationRepo) GetMessages(ctx context.Context, id int, page int16, size int8) (res []r.Inbox, err error) {
-	query := `select u.id,u.conversation_id,u.sender_id,u.content,u.created_at,u.reply_to,
-	gm.id,gm.conversation_id,gm.sender_id,gm.content,gm.created_at
-	from conversation_message as u
-    left join conversation_message as gm on gm.id = u.reply_to
-	where u.conversation_id = $1 order by u.created_at desc limit $2 offset $3`
-	res, err = p.fetchConversationMessages(ctx, query, id, size, page*int16(size))
-	return
-}
+
 func (p *conversationRepo) GetConversations(ctx context.Context, id int) (res []r.Conversation, err error) {
 	query := `select c.conversation_id,e.establecimiento_id,e.name,e.photo from conversations as c
 	inner join establecimientos as e on e.establecimiento_id = c.establecimiento_id where c.profile_id = $1`
@@ -76,7 +68,17 @@ func (p *conversationRepo)DeleteMessage(ctx context.Context,id int )(err error){
 	return
 }
 
-func (m *conversationRepo) fetchConversationMessages(ctx context.Context, query string, args ...interface{}) (res []r.Inbox, err error) {
+func (p *conversationRepo) GetChatUnreadMessages(ctx context.Context, chatId int, lastUpdated string) (res []r.Message, err error) {
+	query := `select m.id,m.chat_id,m.profile_id,m.content,m.data,m.created_at,m.reply_to,
+	m.type_message,m.is_user,m.is_deleted
+	from conversation_message as m where m.chat_id = $1 and m.created_at >= $2 limit 100`
+	res, err = p.fetchMessagesGrupo(ctx, query, chatId, lastUpdated)
+	return
+}
+
+
+
+func (m *conversationRepo) fetchMessagesGrupo(ctx context.Context, query string, args ...interface{}) (res []r.Message, err error) {
 	rows, err := m.Conn.QueryContext(ctx, query, args...)
 	if err != nil {
 		return nil, err
@@ -87,21 +89,20 @@ func (m *conversationRepo) fetchConversationMessages(ctx context.Context, query 
 			log.Println(errRow)
 		}
 	}()
-	res = make([]r.Inbox, 0)
+	res = make([]r.Message, 0)
 	for rows.Next() {
-		t := r.Inbox{}
+		t := r.Message{}
 		err = rows.Scan(
 			&t.Id,
-			&t.ConversationId,
-			&t.SenderId,
+			&t.ChatId,
+			&t.ProfileId,
 			&t.Content,
+			&t.Data,
 			&t.CreatedAt,
 			&t.ReplyTo,
-			&t.Reply.Id,
-			&t.Reply.ConversationId,
-			&t.Reply.SenderId,
-			&t.Reply.Content,
-			&t.Reply.CreatedAt,
+			&t.TypeMessage,
+			&t.IsUser,
+			&t.IsDeleted,
 		)
 		res = append(res, t)
 	}

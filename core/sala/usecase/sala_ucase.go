@@ -31,17 +31,19 @@ func NewUseCase(timeout time.Duration, salaRepo r.SalaRepository, utilU r.UtilUs
 		utilU:    utilU,
 	}
 }
-func (u *salaUcase) GetChatUnreadMessage(ctx context.Context, chatId int64, lastUpdate string) (res []r.Message, err error) {
+func (u *salaUcase) GetChatUnreadMessages(ctx context.Context, chatId int, lastUpdate string) (res []r.Message, err error) {
 	ctx, cancel := context.WithTimeout(ctx, u.timeout)
 	defer cancel()
-	res, err = u.salaRepo.GetChatUnreadMessage(ctx, chatId, lastUpdate)
-	if err != nil {
-		u.utilU.LogError("GetChatUnreadMessage", "grupo_usecase", err.Error())
-		return
-	}
+	res, err = u.salaRepo.GetChatUnreadMessages(ctx, chatId, lastUpdate)
 	return
 }
 
+func (u *salaUcase)DeleteMessage(ctx context.Context,id int)(err error){
+	ctx, cancel := context.WithTimeout(ctx, u.timeout)
+	defer cancel()
+	err = u.salaRepo.DeleteMessage(ctx,id)
+	return
+}
 //
 
 func (u *salaUcase) SaveMessage(ctx context.Context, d *r.Message) (err error) {

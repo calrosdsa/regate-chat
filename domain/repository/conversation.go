@@ -19,17 +19,19 @@ type ChatEstablecimiento struct {
 
 type ConversationAdminRepository interface {
 	GetConversationsEstablecimiento(ctx context.Context, uuid string) ([]ChatEstablecimiento, error)
-	GetMessages(ctx context.Context,id int,page int16,size int8)([]Message,error)
+	GetMessages(ctx context.Context,id int,page int16,size int8)([]MessageWithReply,error)
+	GetConversationsMessagesCount(ctx context.Context,uuid string)(res int,err error)
 }
 type ConversationAdminUseCase interface {
 	GetConversationsEstablecimiento(ctx context.Context, uuid string) ([]ChatEstablecimiento, error)
-	GetMessages(ctx context.Context,id int,page int16,size int8)([]Message,int16,error)
+	GetMessages(ctx context.Context,id int,page int16,size int8)([]MessageWithReply,int16,error)
+	GetConversationsMessagesCount(ctx context.Context,uuid string)(res int,err error)
 }
 
 type ConversationRepository interface {
 	SaveMessage(ctx context.Context, d *Message) (err error)
-	GetMessages(ctx context.Context, id int, page int16, size int8) ([]Inbox, error)
 	GetConversations(ctx context.Context, id int) ([]Conversation, error)
+	GetChatUnreadMessages(ctx context.Context,chatId int, lastUpdate string)([]Message,error)
 
 	GetOrCreateConversation(ctx context.Context, id int, profileId int) (conversationId int, err error)
 	UpdateMessageToReaded(ctx context.Context,id int)(err error)
@@ -38,8 +40,8 @@ type ConversationRepository interface {
 
 type ConversationUseCase interface {
 	SaveMessage(ctx context.Context, d *Message) (err error)
-	GetMessages(ctx context.Context, id int, page int16, size int8) (res []Inbox, nextPage int16, err error)
 	GetConversations(ctx context.Context, id int) ([]Conversation, error)
+	GetChatUnreadMessages(ctx context.Context,chatId int, lastUpdate string)([]Message,error)
 
 	GetOrCreateConversation(ctx context.Context, id int, profileId int) (conversationId int, err error)
 	UpdateMessagesToReaded(ctx context.Context,ids []int)(err error)

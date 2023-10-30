@@ -8,6 +8,7 @@ create table if not exists grupo_message(
   type_message smallint DEFAULT 0,
   created_at TIMESTAMP DEFAULT current_timestamp,
   content TEXT NOT NULL,
+  is_deleted boolean default false,
   grupo_id int,
   data text,
   CONSTRAINT fk_grupo

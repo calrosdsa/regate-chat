@@ -29,6 +29,7 @@ func NewAdminHandler(e *echo.Echo, conversationAdminUseCase r.ConversationAdminU
 	// e.GET("v1/conversation/messages/:id/",handler.GetConversationMessages)
 	// e.GET("v1/conversations/",handler.GetConversations)
 	e.GET("v1/conversations/:uuid/",handler.GetConversationsEstablecimiento)
+	e.GET("v1/conversations/messages-count/:uuid/",handler.GetConversationsMessagesCount)
 	e.GET("v1/conversation/messages/:id/",handler.GetMessages)
 }
 
@@ -58,7 +59,7 @@ func (h *ConversationAdminHandler) GetMessages(c echo.Context) (err error) {
 	}
 	response := struct {
 		Page    int16       `json:"page"`
-		Results []r.Message `json:"results"`
+		Results []r.MessageWithReply `json:"results"`
 	}{
 		Page:    nextPage,
 		Results: res,
@@ -82,6 +83,24 @@ func (h *ConversationAdminHandler)GetConversationsEstablecimiento(c echo.Context
 	// }
 	ctx := c.Request().Context()
 	res,err := h.conversationAdminUseCase.GetConversationsEstablecimiento(ctx,uuid)
+	if err != nil {
+		log.Println("SYNC error",err)
+		return c.JSON(http.StatusBadRequest, r.ResponseMessage{Message: err.Error()})
+	}
+	return c.JSON(http.StatusOK, res)
+}
+
+func (h *ConversationAdminHandler)GetConversationsMessagesCount(c echo.Context)(err error){
+	auth := c.Request().Header["Authorization"][0]
+	token := _jwt.GetToken(auth)
+	_, err = _jwt.ExtractClaims(token)
+	if err != nil {
+		log.Println(err)
+		return c.JSON(http.StatusUnauthorized, r.ResponseMessage{Message: err.Error()})
+	}
+	uuid := c.Param("uuid")
+	ctx := c.Request().Context()
+	res,err := h.conversationAdminUseCase.GetConversationsMessagesCount(ctx,uuid)
 	if err != nil {
 		log.Println("SYNC error",err)
 		return c.JSON(http.StatusBadRequest, r.ResponseMessage{Message: err.Error()})

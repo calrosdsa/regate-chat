@@ -31,7 +31,7 @@ func NewUseCase(timeout time.Duration, grupoRepo r.GrupoRepository, utilU r.Util
 		utilU:     utilU,
 	}
 }
-func (u *grupoUcase) GetChatUnreadMessage(ctx context.Context, chatId int64, lastUpdate string) (res []r.Message, err error) {
+func (u *grupoUcase) GetChatUnreadMessage(ctx context.Context, chatId int, lastUpdate string) (res []r.Message, err error) {
 	ctx, cancel := context.WithTimeout(ctx, u.timeout)
 	defer cancel()
 	res, err = u.grupoRepo.GetChatUnreadMessage(ctx, chatId, lastUpdate)

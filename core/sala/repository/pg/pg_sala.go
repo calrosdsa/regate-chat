@@ -19,9 +19,10 @@ func NewRepository(conn *sql.DB) r.SalaRepository {
 	}
 }
 
-func (p *salaRepo) GetChatUnreadMessage(ctx context.Context, chatId int64, lastUpdated string) (res []r.Message, err error) {
-	query := `select gm.id,gm.chat_id,gm.profile_id,gm.content,gm.data,gm.created_at,gm.reply_to,gm.type_message
-	 from grupo_message as gm where chat_id = $1 and gm.created_at >= $2`
+func (p *salaRepo) GetChatUnreadMessages(ctx context.Context, chatId int, lastUpdated string) (res []r.Message, err error) {
+	query := `select m.id,m.chat_id,m.profile_id,m.content,m.data,m.created_at,
+	m.reply_to,m.type_message,is_deleted
+	from sala_message as m where chat_id = $1 and m.created_at >= $2`
 	res, err = p.fetchMessagesGrupo(ctx, query, chatId, lastUpdated)
 	return
 
@@ -38,6 +39,12 @@ func (p *salaRepo) SaveMessage(ctx context.Context, d *r.Message) (err error) {
 	if err != nil {
 		log.Println(err, "FAIL TO SAVE MESSAGE")
 	}
+	return
+}
+
+func (p *salaRepo)DeleteMessage(ctx context.Context,id int)(err error){
+	query := `update sala_message set is_deleted = true where id = $1`
+	_,err = p.Conn.ExecContext(ctx,query,id)
 	return
 }
 

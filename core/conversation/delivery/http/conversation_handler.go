@@ -22,7 +22,7 @@ func NewHandler(e *echo.Echo, conversationUcase r.ConversationUseCase) {
 	handler := ConversationHandler{
 		conversationUcase: conversationUcase,
 	}
-	e.GET("v1/conversation/messages/:id/",handler.GetMessages)
+	// e.GET("v1/conversation/messages/:id/",handler.GetMessages)
 	// e.GET("v1/conversation/messages/:id/",handler.GetConversationMessages)
 	e.GET("v1/conversations/",handler.GetConversations)
 	e.GET("v1/conversation/get-id/:establecimientoId/",handler.GetOrCreateConversation)
@@ -49,6 +49,25 @@ func (h *ConversationHandler)UpdateMessagesToReaded(c echo.Context)(err error){
 	}
 	return c.JSON(http.StatusOK,nil)
 }
+
+// func (h *ConversationHandler)GetChatUnreadMessages(c echo.Context)(err error){
+// 	auth := c.Request().Header["Authorization"][0]
+// 	token := _jwt.GetToken(auth)
+// 	claims, err := _jwt.ExtractClaims(token)
+// 	if err != nil {
+// 		return c.JSON(http.StatusUnauthorized, r.ResponseMessage{Message: err.Error()})
+// 	}
+// 	chatId,err := strconv.Atoi(c.Param("chatId"))
+// 	if err != nil {
+// 		return c.JSON(http.StatusUnprocessableEntity, r.ResponseMessage{Message: err.Error()})
+// 	}
+// 	ctx := c.Request().Context()
+// 	res,err := h.conversationUcase.GetOrCreateConversation(ctx,chatId)
+// 	if err != nil {
+// 		return c.JSON(http.StatusBadRequest, r.ResponseMessage{Message: err.Error()})
+// 	}
+// 	return c.JSON(http.StatusOK,res)
+// }
 
 
 func (h *ConversationHandler)GetOrCreateConversation(c echo.Context)(err error){
@@ -78,39 +97,39 @@ func (h *ConversationHandler)GetOrCreateConversation(c echo.Context)(err error){
 
 
 
-func (h *ConversationHandler) GetMessages(c echo.Context) (err error){
-	// auth := c.Request().Header["Authorization"][0]
-	// token := _jwt.GetToken(auth)
-	// claims, err := _jwt.ExtractClaims(token)
-	// if err != nil {
-		// log.Println(err)
-		// return c.JSON(http.StatusUnauthorized, r.ResponseMessage{Message: err.Error()})
-	// }
-	log.Println("GETTING MESSAGES")
-	page,err := strconv.Atoi(c.QueryParam("page"))
-	if err != nil {
-		log.Println(err)
-		return c.JSON(http.StatusConflict, r.ResponseMessage{Message: err.Error()})
-	}
-	log.Println("PAGE",page)
-	id ,err := strconv.Atoi(c.Param("id"))
-	if err != nil {
-		return c.JSON(http.StatusConflict, r.ResponseMessage{Message: err.Error()})
-	}
-	ctx := c.Request().Context()
-	res,nextPage,err := h.conversationUcase.GetMessages(ctx,id,int16(page),20)
-	if err != nil {
-		return c.JSON(http.StatusBadRequest, r.ResponseMessage{Message: err.Error()})
-	}
-	response := struct {
-		Page int16 `json:"nextPage"`
-		Results  []r.Inbox `json:"results"`
-	}{
-		Page: nextPage,
-		Results: res,
-	}
-	return c.JSON(http.StatusOK, response)
-}
+// func (h *ConversationHandler) GetMessages(c echo.Context) (err error){
+// 	// auth := c.Request().Header["Authorization"][0]
+// 	// token := _jwt.GetToken(auth)
+// 	// claims, err := _jwt.ExtractClaims(token)
+// 	// if err != nil {
+// 		// log.Println(err)
+// 		// return c.JSON(http.StatusUnauthorized, r.ResponseMessage{Message: err.Error()})
+// 	// }
+// 	log.Println("GETTING MESSAGES")
+// 	page,err := strconv.Atoi(c.QueryParam("page"))
+// 	if err != nil {
+// 		log.Println(err)
+// 		return c.JSON(http.StatusConflict, r.ResponseMessage{Message: err.Error()})
+// 	}
+// 	log.Println("PAGE",page)
+// 	id ,err := strconv.Atoi(c.Param("id"))
+// 	if err != nil {
+// 		return c.JSON(http.StatusConflict, r.ResponseMessage{Message: err.Error()})
+// 	}
+// 	ctx := c.Request().Context()
+// 	res,nextPage,err := h.conversationUcase.GetMessages(ctx,id,int16(page),20)
+// 	if err != nil {
+// 		return c.JSON(http.StatusBadRequest, r.ResponseMessage{Message: err.Error()})
+// 	}
+// 	response := struct {
+// 		Page int16 `json:"nextPage"`
+// 		Results  []r.Inbox `json:"results"`
+// 	}{
+// 		Page: nextPage,
+// 		Results: res,
+// 	}
+// 	return c.JSON(http.StatusOK, response)
+// }
 
 func (h *ConversationHandler) GetConversations(c echo.Context) (err error){
 	auth := c.Request().Header["Authorization"][0]

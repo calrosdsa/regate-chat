@@ -32,9 +32,9 @@ func (p *grupoRepo) GetUnreadMessages(ctx context.Context, profileId int, page i
 	res, err = p.fetchMessagesGrupo(ctx, query, profileId, size, page*int16(size))
 	return
 }
-func (p *grupoRepo) GetChatUnreadMessage(ctx context.Context, chatId int64, lastUpdated string) (res []r.Message, err error) {
+func (p *grupoRepo) GetChatUnreadMessage(ctx context.Context, chatId int, lastUpdated string) (res []r.Message, err error) {
 	query := `select gm.id,gm.chat_id,gm.profile_id,gm.content,gm.data,gm.created_at,gm.reply_to,gm.type_message,gm.is_deleted
-	 from grupo_message as gm where chat_id = $1 and gm.created_at >= $2`
+	 from grupo_message as gm where chat_id = $1 and gm.created_at >= $2 limit 100`
 	res, err = p.fetchMessagesGrupo(ctx, query, chatId, lastUpdated)
 	return
 
@@ -85,13 +85,6 @@ func (m *grupoRepo) fetchMessagesGrupo(ctx context.Context, query string, args .
 			&t.ReplyTo,
 			&t.TypeMessage,
 			&t.IsDeleted,
-			// &t.ReplyMessage.Id,
-			// &t.ReplyMessage.GrupoId,
-			// &t.ReplyMessage.ProfileId,
-			// &t.ReplyMessage.Content,
-			// &t.ReplyMessage.CreatedAt,
-			// &t.ReplyMessage.TypeMessage,
-			// &t.ReplyMessage.Data,
 		)
 		res = append(res, t)
 	}

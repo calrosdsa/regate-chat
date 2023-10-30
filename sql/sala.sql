@@ -6,6 +6,7 @@ create table if not exists sala_message(
   type_message smallint DEFAULT 0,
   created_at TIMESTAMP DEFAULT current_timestamp,
   content TEXT NOT NULL,
+  is_deleted boolean default false,
   sala_id int,
   data text,
   CONSTRAINT fk_sala

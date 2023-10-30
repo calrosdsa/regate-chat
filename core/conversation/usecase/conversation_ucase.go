@@ -38,6 +38,14 @@ func (u *conversationUCase) GetOrCreateConversation(ctx context.Context, id int,
 	return
 }
 
+func (u *conversationUCase)GetChatUnreadMessages(ctx context.Context,chatId int,
+	lastUpdate string)(res []r.Message,err error){
+	ctx,cancel := context.WithTimeout(ctx,u.timeout)
+	defer cancel()
+	res,err = u.conversationRepo.GetChatUnreadMessages(ctx,chatId,lastUpdate)
+	return
+}
+
 
 func (u *conversationUCase) GetConversations(ctx context.Context, id int) (res []r.Conversation, err error) {
 	ctx, cancel := context.WithTimeout(ctx, u.timeout)
@@ -49,17 +57,17 @@ func (u *conversationUCase) GetConversations(ctx context.Context, id int) (res [
 	return
 }
 
-func (u *conversationUCase) GetMessages(ctx context.Context, id int, page int16, size int8) (res []r.Inbox, nextPage int16, err error) {
-	ctx, cancel := context.WithTimeout(ctx, u.timeout)
-	defer cancel()
-	page = u.utilU.PaginationValues(page)
-	res, err = u.conversationRepo.GetMessages(ctx, id, page, size)
-	if err != nil {
-		u.utilU.LogError("GetMessages","conversation_usecase",err.Error())
-	}
-	nextPage = u.utilU.GetNextPage(int8(len(res)), int8(size), page+1)
-	return
-}
+// func (u *conversationUCase) GetMessages(ctx context.Context, id int, page int16, size int8) (res []r.Inbox, nextPage int16, err error) {
+// 	ctx, cancel := context.WithTimeout(ctx, u.timeout)
+// 	defer cancel()
+// 	page = u.utilU.PaginationValues(page)
+// 	res, err = u.conversationRepo.GetMessages(ctx, id, page, size)
+// 	if err != nil {
+// 		u.utilU.LogError("GetMessages","conversation_usecase",err.Error())
+// 	}
+// 	nextPage = u.utilU.GetNextPage(int8(len(res)), int8(size), page+1)
+// 	return
+// }
 
 func (u *conversationUCase) SaveMessage(ctx context.Context, d *r.Message) (err error) {
 	ctx, cancel := context.WithTimeout(ctx, u.timeout)
@@ -101,6 +109,7 @@ func (u *conversationUCase)UpdateMessagesToReaded(ctx context.Context,ids []int)
 	}
 	return
 }
+
 
 func (u *conversationUCase)DeleteMessage(ctx context.Context,id int)(err error){
 	ctx,cancel := context.WithTimeout(ctx,u.timeout)

@@ -35,8 +35,15 @@ func (u *conversationAdminUseCase) GetConversationsEstablecimiento(ctx context.C
 	return
 }
 
+func (u *conversationAdminUseCase) GetConversationsMessagesCount(ctx context.Context,uuid string) (res int, err error) {
+	ctx, cancel := context.WithTimeout(ctx, u.timeout)
+	defer cancel()
+	res, err = u.conversationAdminRepo.GetConversationsMessagesCount(ctx, uuid)
+	return
+}
+
 func (u *conversationAdminUseCase) GetMessages(ctx context.Context, id int, page int16,
-	size int8) (res []r.Message, nextPage int16, err error) {
+	size int8) (res []r.MessageWithReply, nextPage int16, err error) {
 	ctx, cancel := context.WithTimeout(ctx, u.timeout)
 	defer func() {
 		cancel()
