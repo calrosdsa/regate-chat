@@ -71,7 +71,7 @@ func (p *conversationRepo)DeleteMessage(ctx context.Context,id int )(err error){
 func (p *conversationRepo) GetChatUnreadMessages(ctx context.Context, chatId int, lastUpdated string) (res []r.Message, err error) {
 	query := `select m.id,m.chat_id,m.profile_id,m.content,m.data,m.created_at,m.reply_to,
 	m.type_message,m.is_user,m.is_deleted
-	from conversation_message as m where m.chat_id = $1 and m.created_at >= $2 limit 100`
+	from conversation_message as m where m.chat_id = $1 and m.created_at > $2 limit 100`
 	res, err = p.fetchMessagesGrupo(ctx, query, chatId, lastUpdated)
 	return
 }

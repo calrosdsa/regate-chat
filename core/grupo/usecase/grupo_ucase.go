@@ -74,11 +74,10 @@ func (u *grupoUcase) DeleteMessage(ctx context.Context,id int) (err error) {
 	return
 }
 
-func (u *grupoUcase) GetUsers(ctx context.Context,d r.RequestUsersGroupOrRoom) (actives []r.UsersGroupOrRoom,
-	inactives []r.UsersGroupOrRoom, err error) {
+func (u *grupoUcase) GetUsers(ctx context.Context,d r.RequestUsersGroupOrRoom) (res []r.UsersGroupOrRoom, err error) {
 	ctx, cancel := context.WithTimeout(ctx, u.timeout)
 	defer cancel()
-	actives,inactives,err = u.grupoRepo.GetUsers(ctx, d)
+	res,err = u.grupoRepo.GetUsers(ctx, d)
 	return
 }
 

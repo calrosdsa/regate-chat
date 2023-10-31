@@ -19,16 +19,6 @@ func NewRepository(conn *sql.DB) r.SalaRepository {
 	}
 }
 
-func (p *salaRepo) GetChatUnreadMessages(ctx context.Context, chatId int, lastUpdated string) (res []r.Message, err error) {
-	query := `select m.id,m.chat_id,m.profile_id,m.content,m.data,m.created_at,
-	m.reply_to,m.type_message,is_deleted
-	from sala_message as m where chat_id = $1 and m.created_at >= $2`
-	res, err = p.fetchMessagesGrupo(ctx, query, chatId, lastUpdated)
-	return
-
-	// select gm.id,gm.chat_id,gm.profile_id,gm.content,gm.data,gm.created_at,gm.reply_to,gm.type_message
-	//  from grupo_message as gm where chat_id = 1 and gm.created_at >= $2
-}
 
 func (p *salaRepo) SaveMessage(ctx context.Context, d *r.Message) (err error) {
 	log.Println(d.CreatedAt, "CreatedAt Message")
@@ -48,6 +38,40 @@ func (p *salaRepo)DeleteMessage(ctx context.Context,id int)(err error){
 	return
 }
 
+func (p *salaRepo)GetUsers(ctx context.Context,d r.RequestUsersGroupOrRoom)(res []r.UsersGroupOrRoom,err error){
+	var (
+		query string
+		activesCount int
+		inactivesCount int
+	)
+	query = `select count(*) FILTER(WHERE is_out = false) as actives,
+	count(*) FILTER(WHERE is_out = true) as inactives from users_sala where sala_id = $1`
+	err = p.Conn.QueryRowContext(ctx,query,d.ParentId).Scan(&activesCount,&inactivesCount)
+	if err != nil {
+		return
+	}
+	if activesCount == d.ActiveUsersCount && inactivesCount == d.InactiveUsersCount {
+		return
+	}
+	sumUsers := activesCount + inactivesCount
+	sumUsersLocal := d.ActiveUsersCount + d.InactiveUsersCount
+	if sumUsers == sumUsersLocal {
+		return
+	}
+	diff := sumUsers - sumUsersLocal
+	query = `select u.id,u.is_admin,u.is_out,p.profile_id,p.nombre,p.apellido,p.profile_photo
+	from users_sala as u inner join profiles as p on p.profile_id = u.profile_id
+	where sala_id = $1 order by u.updated_at desc limit $2`
+	res,err = p.fetchUsers(ctx,query,d.ParentId,diff)
+	return
+}
+func (p *salaRepo) GetChatUnreadMessages(ctx context.Context, chatId int, lastUpdated string) (res []r.Message, err error) {
+	query := `select m.id,m.chat_id,m.profile_id,m.content,m.data,m.created_at,
+	m.reply_to,m.type_message,is_deleted
+	from sala_message as m where chat_id = $1 and m.created_at > $2`
+	res, err = p.fetchMessagesGrupo(ctx, query, chatId, lastUpdated)
+	return
+}
 func (m *salaRepo) fetchMessagesGrupo(ctx context.Context, query string, args ...interface{}) (res []r.Message, err error) {
 	rows, err := m.Conn.QueryContext(ctx, query, args...)
 	if err != nil {
@@ -71,8 +95,39 @@ func (m *salaRepo) fetchMessagesGrupo(ctx context.Context, query string, args ..
 			&t.CreatedAt,
 			&t.ReplyTo,
 			&t.TypeMessage,
+			&t.IsDeleted,
 		)
 		res = append(res, t)
 	}
 	return res, nil
 }
+
+
+func (m *salaRepo) fetchUsers(ctx context.Context, query string, args ...interface{}) (res []r.UsersGroupOrRoom, err error) {
+	rows, err := m.Conn.QueryContext(ctx, query, args...)
+	if err != nil {
+		return nil, err
+	}
+	defer func() {
+		errRow := rows.Close()
+		if errRow != nil {
+			log.Println(errRow)
+		}
+	}()
+	res = make([]r.UsersGroupOrRoom, 0)
+	for rows.Next() {
+		t := r.UsersGroupOrRoom{}
+		err = rows.Scan(
+			&t.Id,
+			&t.IsAdmin,
+			&t.IsOut,
+			&t.ProfileId,
+			&t.ProfileName,
+			&t.ProfileApellido,
+			&t.ProfilePhoto,
+		)
+		res = append(res, t)
+	}
+	return res, nil
+}
+

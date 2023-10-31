@@ -44,7 +44,13 @@ func (u *salaUcase)DeleteMessage(ctx context.Context,id int)(err error){
 	err = u.salaRepo.DeleteMessage(ctx,id)
 	return
 }
-//
+
+func (u *salaUcase) GetUsers(ctx context.Context,d r.RequestUsersGroupOrRoom) (res []r.UsersGroupOrRoom, err error) {
+	ctx, cancel := context.WithTimeout(ctx, u.timeout)
+	defer cancel()
+	res,err = u.salaRepo.GetUsers(ctx, d)
+	return
+}
 
 func (u *salaUcase) SaveMessage(ctx context.Context, d *r.Message) (err error) {
 	ctx, cancel := context.WithTimeout(ctx, u.timeout)

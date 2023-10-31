@@ -34,7 +34,7 @@ func (p *grupoRepo) GetUnreadMessages(ctx context.Context, profileId int, page i
 }
 func (p *grupoRepo) GetChatUnreadMessage(ctx context.Context, chatId int, lastUpdated string) (res []r.Message, err error) {
 	query := `select gm.id,gm.chat_id,gm.profile_id,gm.content,gm.data,gm.created_at,gm.reply_to,gm.type_message,gm.is_deleted
-	 from grupo_message as gm where chat_id = $1 and gm.created_at >= $2 limit 100`
+	 from grupo_message as gm where chat_id = $1 and gm.created_at > $2 limit 100`
 	res, err = p.fetchMessagesGrupo(ctx, query, chatId, lastUpdated)
 	return
 
@@ -59,7 +59,7 @@ func (p *grupoRepo) SaveGrupoMessage(ctx context.Context, d *r.Message) (err err
 	}
 	return
 }
-func (p *grupoRepo)GetUsers(ctx context.Context,d r.RequestUsersGroupOrRoom)(actives,inactives []r.UsersGroupOrRoom,err error){
+func (p *grupoRepo)GetUsers(ctx context.Context,d r.RequestUsersGroupOrRoom)(res []r.UsersGroupOrRoom,err error){
 	var (
 		query string
 		activesCount int
@@ -74,10 +74,45 @@ func (p *grupoRepo)GetUsers(ctx context.Context,d r.RequestUsersGroupOrRoom)(act
 	if activesCount == d.ActiveUsersCount && inactivesCount == d.InactiveUsersCount {
 		return
 	}
-	if activesCount + inactivesCount == d.ActiveUsersCount + d.InactiveUsersCount {
+	sumUsers := activesCount + inactivesCount
+	sumUsersLocal := d.ActiveUsersCount + d.InactiveUsersCount
+	if sumUsers == sumUsersLocal {
 		return
 	}
-	// query = `select `
+	diff := sumUsers - sumUsersLocal
+	query = `select u.id,u.is_admin,u.is_out,p.profile_id,p.nombre,p.apellido,p.profile_photo
+	from user_grupo as u inner join profiles as p on p.profile_id = u.profile_id
+	where grupo_id = $1 order by u.updated_at desc limit $2 `
+	res,err = p.fetchUsers(ctx,query,d.ParentId,diff)
+	return
+}
+
+func (m *grupoRepo) fetchUsers(ctx context.Context, query string, args ...interface{}) (res []r.UsersGroupOrRoom, err error) {
+	rows, err := m.Conn.QueryContext(ctx, query, args...)
+	if err != nil {
+		return nil, err
+	}
+	defer func() {
+		errRow := rows.Close()
+		if errRow != nil {
+			log.Println(errRow)
+		}
+	}()
+	res = make([]r.UsersGroupOrRoom, 0)
+	for rows.Next() {
+		t := r.UsersGroupOrRoom{}
+		err = rows.Scan(
+			&t.Id,
+			&t.IsAdmin,
+			&t.IsOut,
+			&t.ProfileId,
+			&t.ProfileName,
+			&t.ProfileApellido,
+			&t.ProfilePhoto,
+		)
+		res = append(res, t)
+	}
+	return res, nil
 }
 
 func (m *grupoRepo) fetchMessagesGrupo(ctx context.Context, query string, args ...interface{}) (res []r.Message, err error) {

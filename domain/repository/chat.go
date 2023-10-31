@@ -27,7 +27,7 @@ type ChatUseCase interface {
 
 	DeleteMessage(ctx context.Context, d DeleteMessageRequet) (err error)
 	GetDeletedMessages(ctx context.Context, id int) (res []int, err error)
-	GetUsers(ctx context.Context,d RequestUsersGroupOrRoom)(actives []UsersGroupOrRoom,inactives []UsersGroupOrRoom,err error)
+	GetUsers(ctx context.Context,d RequestUsersGroupOrRoom)(res []UsersGroupOrRoom,err error)
 }
 
 type ChatRepository interface {

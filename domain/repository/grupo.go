@@ -9,7 +9,7 @@ type GrupoRepository interface {
 	UpdateUserGrupoLastTimeUpdateMessage(ctx context.Context, profileId int) (err error)
 	DeleteMessage(ctx context.Context,id int)(err error)
 
-	GetUsers(ctx context.Context,d RequestUsersGroupOrRoom)(actives []UsersGroupOrRoom,inactives []UsersGroupOrRoom,err error)
+	GetUsers(ctx context.Context,d RequestUsersGroupOrRoom)(res []UsersGroupOrRoom,err error)
 }
 
 type GrupoUseCase interface {
@@ -20,7 +20,7 @@ type GrupoUseCase interface {
 	UpdateUserGrupoLastTimeUpdateMessage(ctx context.Context, profileId int) (err error)
 	DeleteMessage(ctx context.Context,id int)(err error)
 
-	GetUsers(ctx context.Context,d RequestUsersGroupOrRoom)(actives []UsersGroupOrRoom,inactives []UsersGroupOrRoom,err error)
+	GetUsers(ctx context.Context,d RequestUsersGroupOrRoom)(res []UsersGroupOrRoom,err error)
 }
 
 type Message struct {

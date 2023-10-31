@@ -33,8 +33,35 @@ func NewHandler(e *echo.Echo, chatUseCase r.ChatUseCase) {
 	e.POST("v1/chat/unread-messages/",handler.GetChatUnreadMessages)
 	e.POST("v1/chat/delete/message/",handler.DeleteMessage)
 	e.GET("v1/chat/deleted/messages/:id/",handler.GetDeletedMessages)
+	e.POST("v1/chat/users/",handler.GetUsers)
 
 }
+
+func (h *ChatHandler)GetUsers(c echo.Context)(err error){
+	// auth := c.Request().Header["Authorization"][0]
+	// token := _jwt.GetToken(auth)
+	// _, err = _jwt.ExtractClaims(token)
+	// if err != nil {
+	// 	return c.JSON(http.StatusUnauthorized, r.ResponseMessage{Message: err.Error()})
+	// }
+	var data r.RequestUsersGroupOrRoom
+	err = c.Bind(&data)
+	log.Println("GET USERS",data)
+	if err != nil {
+		log.Println(err)
+		return c.JSON(http.StatusUnprocessableEntity, r.ResponseMessage{Message: err.Error()})
+	}
+	ctx := c.Request().Context()
+	res,err := h.chatUseCase.GetUsers(ctx,data)
+	if err != nil {
+		log.Println(err)
+		return c.JSON(http.StatusUnauthorized, r.ResponseMessage{Message: err.Error()})
+	}
+	log.Println(res,"users")
+	return c.JSON(http.StatusOK,res)
+}
+
+
 func (h *ChatHandler)DeleteMessage(c echo.Context)(err error){
 	auth := c.Request().Header["Authorization"][0]
 	token := _jwt.GetToken(auth)
@@ -109,6 +136,28 @@ func (h *ChatHandler) GetDeletedMessages(c echo.Context)(err error) {
 // 		// return c.JSON(http.StatusBadRequest, r.ResponseMessage{Message: err.Error()})
 // 	// }
 // 	return nil
+// }
+
+// func (h *ChatHandler) SharedMessage(c echo.Context)(err error) {
+// 	var data []r.MessagePublishRequest
+// 	err = c.Bind(&data)
+// 	if err != nil {
+// 		log.Println("SYNC error",err)
+// 		return c.JSON(http.StatusUnprocessableEntity, r.ResponseMessage{Message: err.Error()})
+// 	}
+// 	log.Println(data)
+// 	ctx := c.Request().Context()
+// 	res,err := h.chatUseCase.PublishMessage(ctx,data)
+// 	if err != nil {
+// 		// log.Println("SYNC error",err)
+// 		return c.JSON(http.StatusBadRequest, r.ResponseMessage{Message: err.Error()})
+// 	}
+// 	response := struct {
+// 		Id int `json:"id"`
+// 	}{
+// 		Id: res,
+// 	}
+// 	return c.JSON(http.StatusOK,response)
 // }
 
 func (h *ChatHandler) PublishMessage(c echo.Context)(err error) {

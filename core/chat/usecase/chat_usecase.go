@@ -49,15 +49,20 @@ func NewUseCase(timeout time.Duration, charRepo r.ChatRepository, utilU r.UtilUs
 	}
 }
 
-func (u *chatUseCase) GetUsers(ctx context.Context,d r.RequestUsersGroupOrRoom)(actives []r.UsersGroupOrRoom,
-	inactives []r.UsersGroupOrRoom,err error){
+func (u *chatUseCase) GetUsers(ctx context.Context,d r.RequestUsersGroupOrRoom)(res []r.UsersGroupOrRoom,err error){
 	ctx, cancel := context.WithTimeout(ctx, u.timeout)
 	defer cancel()
 	switch d.TypeChat {
 	case r.TypeChatGrupo:
-		actives,inactives,err = u.grupoU.GetUsers(ctx,d)
+		res,err = u.grupoU.GetUsers(ctx,d)
 		if err != nil {
 			u.utilU.LogError("GetUsers_Grupo", "chat_usecase", err.Error())
+			return
+		}
+	case r.TypeChatSala:
+		res,err = u.salaU.GetUsers(ctx,d)
+		if err != nil {
+			u.utilU.LogError("GetUsers_Sala", "chat_usecase", err.Error())
 			return
 		}
 	}
@@ -83,6 +88,7 @@ func (u *chatUseCase) GetChatUnreadMessages(ctx context.Context, d r.RequestChat
 		}
 		return
 	case r.TypeChatSala:
+		log.Println("GETTING UNREAD MESSAGES SALA")
 		res,err = u.salaU.GetChatUnreadMessages(ctx,d.ChatId,d.LastUpdateChat)	
 		if err != nil {
 			u.utilU.LogError("GetChatUnreadMessages_Sala", "chat_usecase", err.Error())
