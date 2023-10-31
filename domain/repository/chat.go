@@ -15,7 +15,7 @@ type MessageEvent struct {
 }
 
 type RequestChatUnreadMessages struct {
-	ChatId         int    `json:"chat_id"`
+	ChatId         int      `json:"chat_id"`
 	LastUpdateChat string   `json:"last_update_chat"`
 	TypeChat       TypeChat `json:"type_chat"`
 }
@@ -27,6 +27,7 @@ type ChatUseCase interface {
 
 	DeleteMessage(ctx context.Context, d DeleteMessageRequet) (err error)
 	GetDeletedMessages(ctx context.Context, id int) (res []int, err error)
+	GetUsers(ctx context.Context,d RequestUsersGroupOrRoom)(actives []UsersGroupOrRoom,inactives []UsersGroupOrRoom,err error)
 }
 
 type ChatRepository interface {
@@ -35,9 +36,17 @@ type ChatRepository interface {
 	GetDeletedMessages(ctx context.Context, id int) (res []int, err error)
 }
 
+type RequestUsersGroupOrRoom struct {
+	ParentId int      `json:"parent_id"`
+	TypeChat TypeChat `json:"type_chat"`
+	//cantidad de usuarios almacenadosasa localmente
+	ActiveUsersCount int `json:"active_users_count"`
+	InactiveUsersCount int `json:"inactive_users_count"`
+}
+
 type DeleteMessageRequet struct {
 	Id       int      `json:"id"`
-	Ids      []int `json:"ids"`
+	Ids      []int    `json:"ids"`
 	ChatId   int      `json:"chat_id"`
 	TypeChat TypeChat `json:"type_chat"`
 }
@@ -66,9 +75,8 @@ const (
 type MessageEventType string
 
 const (
-	EventTypeMessage MessageEventType = "message"
+	EventTypeMessage        MessageEventType = "message"
 	EventTypeDeletedMessage MessageEventType = "delete-message"
-
 )
 
 type TypeChat int8

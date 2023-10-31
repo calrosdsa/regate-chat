@@ -59,7 +59,26 @@ func (p *grupoRepo) SaveGrupoMessage(ctx context.Context, d *r.Message) (err err
 	}
 	return
 }
-
+func (p *grupoRepo)GetUsers(ctx context.Context,d r.RequestUsersGroupOrRoom)(actives,inactives []r.UsersGroupOrRoom,err error){
+	var (
+		query string
+		activesCount int
+		inactivesCount int
+	)
+	query = `select count(*) FILTER(WHERE is_out = false) as actives,
+	count(*) FILTER(WHERE is_out = true) as inactives from user_grupo where grupo_id = $1`
+	err = p.Conn.QueryRowContext(ctx,query,d.ParentId).Scan(&activesCount,&inactivesCount)
+	if err != nil {
+		return
+	}
+	if activesCount == d.ActiveUsersCount && inactivesCount == d.InactiveUsersCount {
+		return
+	}
+	if activesCount + inactivesCount == d.ActiveUsersCount + d.InactiveUsersCount {
+		return
+	}
+	// query = `select `
+}
 
 func (m *grupoRepo) fetchMessagesGrupo(ctx context.Context, query string, args ...interface{}) (res []r.Message, err error) {
 	rows, err := m.Conn.QueryContext(ctx, query, args...)

@@ -14,3 +14,23 @@ create table if not exists grupo_message(
   CONSTRAINT fk_grupo
   FOREIGN KEY(grupo_id) 
 	REFERENCES grupos(grupo_id) on delete cascade);
+
+
+  create table if not exists user_grupo(
+  id serial,
+  profile_id int not null,
+  grupo_id int not null,
+  created_at timestamp DEFAULT current_timestamp,
+  updated_at timestamp DEFAULT current_timestamp,
+  last_update_messages timestamp DEFAULT current_timestamp, 
+  estado int DEFAULT 0,
+  is_admin boolean DEFAULT false,
+  is_out boolean default false,
+  primary key (profile_id,grupo_id),
+  CONSTRAINT fk_profile
+  FOREIGN KEY(profile_id) 
+	REFERENCES profiles(profile_id),
+  CONSTRAINT fk_grupo
+  FOREIGN KEY(grupo_id) 
+	REFERENCES grupos(grupo_id) on delete cascade
+);

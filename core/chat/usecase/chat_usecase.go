@@ -48,6 +48,22 @@ func NewUseCase(timeout time.Duration, charRepo r.ChatRepository, utilU r.UtilUs
 		utilU: utilU,
 	}
 }
+
+func (u *chatUseCase) GetUsers(ctx context.Context,d r.RequestUsersGroupOrRoom)(actives []r.UsersGroupOrRoom,
+	inactives []r.UsersGroupOrRoom,err error){
+	ctx, cancel := context.WithTimeout(ctx, u.timeout)
+	defer cancel()
+	switch d.TypeChat {
+	case r.TypeChatGrupo:
+		actives,inactives,err = u.grupoU.GetUsers(ctx,d)
+		if err != nil {
+			u.utilU.LogError("GetUsers_Grupo", "chat_usecase", err.Error())
+			return
+		}
+	}
+	return
+}
+
 func (u *chatUseCase) GetChatUnreadMessages(ctx context.Context, d r.RequestChatUnreadMessages) (res []r.Message, err error) {
 	ctx, cancel := context.WithTimeout(ctx, u.timeout)
 	defer cancel()

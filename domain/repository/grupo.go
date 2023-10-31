@@ -8,6 +8,8 @@ type GrupoRepository interface {
 	GetChatUnreadMessage(ctx context.Context, chatId int, lastUpdate string) (res []Message, err error)
 	UpdateUserGrupoLastTimeUpdateMessage(ctx context.Context, profileId int) (err error)
 	DeleteMessage(ctx context.Context,id int)(err error)
+
+	GetUsers(ctx context.Context,d RequestUsersGroupOrRoom)(actives []UsersGroupOrRoom,inactives []UsersGroupOrRoom,err error)
 }
 
 type GrupoUseCase interface {
@@ -17,6 +19,8 @@ type GrupoUseCase interface {
 	GetChatUnreadMessage(ctx context.Context, chatId int, lastUpdate string) (res []Message, err error)
 	UpdateUserGrupoLastTimeUpdateMessage(ctx context.Context, profileId int) (err error)
 	DeleteMessage(ctx context.Context,id int)(err error)
+
+	GetUsers(ctx context.Context,d RequestUsersGroupOrRoom)(actives []UsersGroupOrRoom,inactives []UsersGroupOrRoom,err error)
 }
 
 type Message struct {
