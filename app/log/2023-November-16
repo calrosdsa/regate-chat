@@ -1,0 +1,2 @@
+time="2023-11-16T09:45:04-06:00" level=error msg="pq: relation \"conversations\" does not exist" file=conversation_usecase method=GetConversations
+time="2023-11-16T11:42:02-06:00" level=error msg="read tcp 172.20.20.76:64801->10.0.0.132:5432: wsarecv: A connection attempt failed because the connected party did not properly respond after a period of time, or established connection failed because connected host has failed to respond." file=chat_usecase method=GetChatUser

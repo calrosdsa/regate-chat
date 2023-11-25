@@ -1,0 +1,2 @@
+time="2023-11-08T11:38:20-06:00" level=error msg="pq: LIMIT must not be negative" file=chat_usecase method=GetUsers_Grupo
+time="2023-11-08T11:42:53-06:00" level=error msg="pq: relation \"conversations\" does not exist" file=conversation_usecase method=GetConversations
