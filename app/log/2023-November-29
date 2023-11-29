@@ -1,0 +1,22 @@
+time="2023-11-29T09:37:55-06:00" level=error msg="pq: LIMIT must not be negative" file=chat_usecase method=GetUsers_Sala
+time="2023-11-29T09:47:24-06:00" level=error msg="pq: LIMIT must not be negative" file=chat_usecase method=GetUsers_Sala
+time="2023-11-29T09:53:08-06:00" level=error msg="pq: LIMIT must not be negative" file=chat_usecase method=GetUsers_Sala
+time="2023-11-29T09:53:11-06:00" level=error msg="pq: LIMIT must not be negative" file=chat_usecase method=GetUsers_Sala
+time="2023-11-29T09:53:32-06:00" level=error msg="pq: LIMIT must not be negative" file=chat_usecase method=GetUsers_Sala
+time="2023-11-29T09:56:23-06:00" level=error msg="pq: LIMIT must not be negative" file=chat_usecase method=GetUsers_Sala
+time="2023-11-29T09:56:31-06:00" level=error msg="pq: LIMIT must not be negative" file=chat_usecase method=GetUsers_Sala
+time="2023-11-29T09:56:38-06:00" level=error msg="pq: LIMIT must not be negative" file=chat_usecase method=GetUsers_Sala
+time="2023-11-29T09:56:41-06:00" level=error msg="pq: LIMIT must not be negative" file=chat_usecase method=GetUsers_Sala
+time="2023-11-29T09:59:45-06:00" level=error msg="pq: LIMIT must not be negative" file=chat_usecase method=GetUsers_Sala
+time="2023-11-29T09:59:49-06:00" level=error msg="pq: LIMIT must not be negative" file=chat_usecase method=GetUsers_Sala
+time="2023-11-29T10:00:04-06:00" level=error msg="pq: LIMIT must not be negative" file=chat_usecase method=GetUsers_Sala
+time="2023-11-29T10:00:08-06:00" level=error msg="pq: LIMIT must not be negative" file=chat_usecase method=GetUsers_Sala
+time="2023-11-29T10:07:08-06:00" level=error msg="pq: LIMIT must not be negative" file=chat_usecase method=GetUsers_Sala
+time="2023-11-29T10:07:46-06:00" level=error msg="pq: LIMIT must not be negative" file=chat_usecase method=GetUsers_Sala
+time="2023-11-29T10:07:48-06:00" level=error msg="pq: LIMIT must not be negative" file=chat_usecase method=GetUsers_Sala
+time="2023-11-29T10:07:53-06:00" level=error msg="pq: LIMIT must not be negative" file=chat_usecase method=GetUsers_Sala
+time="2023-11-29T10:08:02-06:00" level=error msg="pq: LIMIT must not be negative" file=chat_usecase method=GetUsers_Sala
+time="2023-11-29T11:36:02-06:00" level=error msg="read tcp 172.20.20.76:61449->10.0.0.132:5432: wsarecv: A connection attempt failed because the connected party did not properly respond after a period of time, or established connection failed because connected host has failed to respond." file=chat_usecase method=GetChatUnreadMessages_Sala
+time="2023-11-29T11:59:06-06:00" level=error msg="pq: LIMIT must not be negative" file=chat_usecase method=GetUsers_Sala
+time="2023-11-29T11:59:52-06:00" level=error msg="pq: LIMIT must not be negative" file=chat_usecase method=GetUsers_Sala
+time="2023-11-29T14:09:35-06:00" level=error msg="pq: column reference \"updated_at\" is ambiguous" file=chat_usecase method=GetUsers_Sala

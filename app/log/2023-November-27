@@ -1,0 +1,1 @@
+time="2023-11-27T10:11:40-06:00" level=error msg="pq: LIMIT must not be negative" file=chat_usecase method=GetUsers_Sala

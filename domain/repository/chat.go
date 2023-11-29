@@ -20,6 +20,7 @@ type RequestChatUnreadMessages struct {
 	TypeChat       TypeChat `json:"type_chat"`
 }
 type ChatUseCase interface {
+	GetChatByParentId(ctx context.Context,parentId int,typeChat TypeChat)(res Chat,err error)
 	GetChatsUser(ctx context.Context, profileId int, page int16, size int8) (res []Chat,
 		nextPage int16, err error)
 	PublishMessage(ctx context.Context, msg MessagePublishRequest) (res int, err error)
@@ -28,9 +29,11 @@ type ChatUseCase interface {
 	DeleteMessage(ctx context.Context, d DeleteMessageRequet) (err error)
 	GetDeletedMessages(ctx context.Context, id int) (res []int, err error)
 	GetUsers(ctx context.Context,d RequestUsersGroupOrRoom)(res []UsersGroupOrRoom,err error)
+	NotifyNewUser(chatId int,d UsersGroupOrRoom)
 }
 
 type ChatRepository interface {
+	GetChatByParentId(ctx context.Context,parentId int,typeChat TypeChat)(res Chat,err error)
 	GetChatsUser(ctx context.Context, profileId int, page int16, size int8) (res []Chat, err error)
 	DeleteMessage(ctx context.Context, id int, chatId int) (err error)
 	GetDeletedMessages(ctx context.Context, id int) (res []int, err error)
@@ -40,8 +43,7 @@ type RequestUsersGroupOrRoom struct {
 	ParentId int      `json:"parent_id"`
 	TypeChat TypeChat `json:"type_chat"`
 	//cantidad de usuarios almacenadosasa localmente
-	ActiveUsersCount int `json:"active_users_count"`
-	InactiveUsersCount int `json:"inactive_users_count"`
+	LastUpdated *string `json:"last_updated"`
 }
 
 type DeleteMessageRequet struct {

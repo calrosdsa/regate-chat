@@ -62,29 +62,20 @@ func (p *grupoRepo) SaveGrupoMessage(ctx context.Context, d *r.Message) (err err
 func (p *grupoRepo)GetUsers(ctx context.Context,d r.RequestUsersGroupOrRoom)(res []r.UsersGroupOrRoom,err error){
 	var (
 		query string
-		activesCount int
-		inactivesCount int
+
 	)
-	query = `select count(*) FILTER(WHERE is_out = false) as actives,
-	count(*) FILTER(WHERE is_out = true) as inactives from user_grupo where grupo_id = $1`
-	err = p.Conn.QueryRowContext(ctx,query,d.ParentId).Scan(&activesCount,&inactivesCount)
-	if err != nil {
-		return
+	if d.LastUpdated == nil {
+		query = `select u.id,u.is_admin,u.is_out,p.profile_id,p.nombre,p.apellido,p.profile_photo
+		from user_grupo as u inner join profiles as p on p.profile_id = u.profile_id
+		where grupo_id = $1  limit 500 `
+		res,err = p.fetchUsers(ctx,query,d.ParentId)
+	}else {
+		query = `select u.id,u.is_admin,u.is_out,p.profile_id,p.nombre,p.apellido,p.profile_photo
+		from user_grupo as u inner join profiles as p on p.profile_id = u.profile_id
+		where grupo_id = $1 and u.updated_at > $2 order by u.updated_at desc limit 500 `
+		res,err = p.fetchUsers(ctx,query,d.ParentId,d.LastUpdated)
 	}
-	if activesCount == d.ActiveUsersCount && inactivesCount == d.InactiveUsersCount {
-		return
-	}
-	sumUsers := activesCount + inactivesCount
-	sumUsersLocal := d.ActiveUsersCount + d.InactiveUsersCount
-	if sumUsers == sumUsersLocal {
-		return
-	}
-	diff := sumUsers - sumUsersLocal
-	query = `select u.id,u.is_admin,u.is_out,p.profile_id,p.nombre,p.apellido,p.profile_photo
-	from user_grupo as u inner join profiles as p on p.profile_id = u.profile_id
-	where grupo_id = $1 order by u.updated_at desc limit $2 `
-	res,err = p.fetchUsers(ctx,query,d.ParentId,diff)
-	return
+	return 
 }
 
 func (m *grupoRepo) fetchUsers(ctx context.Context, query string, args ...interface{}) (res []r.UsersGroupOrRoom, err error) {

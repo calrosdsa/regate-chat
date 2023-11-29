@@ -1,0 +1,23 @@
+time="2023-11-28T08:02:05-06:00" level=error msg="pq: column \"is_out\" does not exist" file=chat_usecase method=GetUsers_Sala
+time="2023-11-28T08:08:48-06:00" level=error msg="pq: column \"is_out\" does not exist" file=chat_usecase method=GetUsers_Sala
+time="2023-11-28T09:00:38-06:00" level=error msg="pq: column \"is_out\" does not exist" file=chat_usecase method=GetUsers_Sala
+time="2023-11-28T09:39:20-06:00" level=error msg="pq: column \"is_out\" does not exist" file=chat_usecase method=GetUsers_Sala
+time="2023-11-28T10:09:01-06:00" level=error msg="pq: column \"is_out\" does not exist" file=chat_usecase method=GetUsers_Sala
+time="2023-11-28T10:09:39-06:00" level=error msg="pq: column \"is_out\" does not exist" file=chat_usecase method=GetUsers_Sala
+time="2023-11-28T10:10:30-06:00" level=error msg="pq: column \"is_out\" does not exist" file=chat_usecase method=GetUsers_Sala
+time="2023-11-28T10:10:38-06:00" level=error msg="pq: insert or update on table \"sala_message\" violates foreign key constraint \"fk_sala\"" file=grupo_usecase method=SaveMessage
+time="2023-11-28T10:10:38-06:00" level=error msg="pq: insert or update on table \"sala_message\" violates foreign key constraint \"fk_sala\"" file=chat_usecase method=PublishMessage_SaveSalaMessage
+time="2023-11-28T10:10:41-06:00" level=error msg="pq: insert or update on table \"sala_message\" violates foreign key constraint \"fk_sala\"" file=grupo_usecase method=SaveMessage
+time="2023-11-28T10:10:41-06:00" level=error msg="pq: insert or update on table \"sala_message\" violates foreign key constraint \"fk_sala\"" file=chat_usecase method=PublishMessage_SaveSalaMessage
+time="2023-11-28T10:11:03-06:00" level=error msg="pq: column \"is_out\" does not exist" file=chat_usecase method=GetUsers_Sala
+time="2023-11-28T10:11:11-06:00" level=error msg="pq: column \"is_out\" does not exist" file=chat_usecase method=GetUsers_Sala
+time="2023-11-28T10:27:50-06:00" level=error msg="pq: insert or update on table \"sala_message\" violates foreign key constraint \"fk_sala\"" file=grupo_usecase method=SaveMessage
+time="2023-11-28T10:27:50-06:00" level=error msg="pq: insert or update on table \"sala_message\" violates foreign key constraint \"fk_sala\"" file=chat_usecase method=PublishMessage_SaveSalaMessage
+time="2023-11-28T10:30:18-06:00" level=error msg="pq: insert or update on table \"sala_message\" violates foreign key constraint \"fk_sala\"" file=grupo_usecase method=SaveMessage
+time="2023-11-28T10:30:18-06:00" level=error msg="pq: insert or update on table \"sala_message\" violates foreign key constraint \"fk_sala\"" file=chat_usecase method=PublishMessage_SaveSalaMessage
+time="2023-11-28T12:04:24-06:00" level=error msg="pq: insert or update on table \"sala_message\" violates foreign key constraint \"fk_sala\"" file=grupo_usecase method=SaveMessage
+time="2023-11-28T12:04:24-06:00" level=error msg="pq: insert or update on table \"sala_message\" violates foreign key constraint \"fk_sala\"" file=chat_usecase method=PublishMessage_SaveSalaMessage
+time="2023-11-28T13:15:34-06:00" level=error msg="pq: column \"is_out\" does not exist" file=chat_usecase method=GetUsers_Sala
+time="2023-11-28T13:15:48-06:00" level=error msg="pq: column \"is_out\" does not exist" file=chat_usecase method=GetUsers_Sala
+time="2023-11-28T13:19:30-06:00" level=error msg="pq: column u.is_admin does not exist" file=chat_usecase method=GetUsers_Sala
+time="2023-11-28T13:21:00-06:00" level=error msg="pq: column u.updated_at does not exist" file=chat_usecase method=GetUsers_Sala

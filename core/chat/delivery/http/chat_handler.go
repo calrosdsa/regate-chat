@@ -29,13 +29,40 @@ func NewHandler(e *echo.Echo, chatUseCase r.ChatUseCase) {
 	// e.GET("v1/conversation/messages/:id/",handler.GetConversationMessages)
 	// e.GET("v1/conversations/",handler.GetConversations)
 	e.GET("v1/chats/",handler.GetChatsUser)
+	e.GET("v1/chat/:id/:typeChat/",handler.GetChatByParentId)
 	e.POST("v1/chat/publish/message/",handler.PublishMessage)
 	e.POST("v1/chat/unread-messages/",handler.GetChatUnreadMessages)
 	e.POST("v1/chat/delete/message/",handler.DeleteMessage)
 	e.GET("v1/chat/deleted/messages/:id/",handler.GetDeletedMessages)
 	e.POST("v1/chat/users/",handler.GetUsers)
+	e.POST("v1/chat/notify/new-user/:chatId/",handler.NotifyNewUser)
 
 }
+func (h *ChatHandler)GetChatByParentId(c echo.Context)(err error){
+	// auth := c.Request().Header["Authorization"][0]
+	// token := _jwt.GetToken(auth)
+	// _, err = _jwt.ExtractClaims(token)
+	// if err != nil {
+	// 	return c.JSON(http.StatusUnauthorized, r.ResponseMessage{Message: err.Error()})
+	// }
+	id,err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		return c.JSON(http.StatusUnprocessableEntity, r.ResponseMessage{Message: err.Error()})
+	}
+	typeChat,err := strconv.Atoi(c.Param("typeChat"))
+	if err != nil {
+		return c.JSON(http.StatusUnprocessableEntity, r.ResponseMessage{Message: err.Error()})
+	}
+	ctx := c.Request().Context()
+	res,err := h.chatUseCase.GetChatByParentId(ctx,id,r.TypeChat(typeChat))
+	if err != nil {
+		log.Println(err)
+		return c.JSON(http.StatusUnauthorized, r.ResponseMessage{Message: err.Error()})
+	}
+	log.Println(res,"chat")
+	return c.JSON(http.StatusOK,res)
+}
+
 
 func (h *ChatHandler)GetUsers(c echo.Context)(err error){
 	// auth := c.Request().Header["Authorization"][0]
@@ -180,6 +207,22 @@ func (h *ChatHandler) PublishMessage(c echo.Context)(err error) {
 		Id: res,
 	}
 	return c.JSON(http.StatusOK,response)
+}
+
+func (h *ChatHandler) NotifyNewUser(c echo.Context)(err error) {
+	var data r.UsersGroupOrRoom
+	err = c.Bind(&data)
+	if err != nil {
+		log.Println("ERROR 1",err)
+		return c.JSON(http.StatusUnprocessableEntity, r.ResponseMessage{Message: err.Error()})
+	}
+	chatId,err := strconv.Atoi(c.Param("chatId"))
+	if err != nil {
+		log.Println("ERROR 2",err)
+		return c.JSON(http.StatusUnprocessableEntity, r.ResponseMessage{Message: err.Error()})
+	}
+	 h.chatUseCase.NotifyNewUser(chatId,data)
+	return c.JSON(http.StatusOK,nil)
 }
 
 func (h *ChatHandler)GetChatsUser(c echo.Context)(err error){

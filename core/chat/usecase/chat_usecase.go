@@ -49,6 +49,35 @@ func NewUseCase(timeout time.Duration, charRepo r.ChatRepository, utilU r.UtilUs
 	}
 }
 
+func (u *chatUseCase) NotifyNewUser(chatId int,user r.UsersGroupOrRoom){
+	payloadData,err := json.Marshal(user)
+	if err != nil {
+		u.utilU.LogError("NotifyNewUser","ws_usecase",err.Error())
+	} 
+	wsAccountPayload := r.MessageEvent{
+		Type: "new-user",
+		Payload: string(payloadData),
+	}
+	payload,err := json.Marshal(wsAccountPayload)
+	if err != nil {
+		u.utilU.LogError("NotifyNewUser2","ws_usecase",err.Error())
+	} 
+	log.Println("PAYLOAD NEW USER",chatId,string(payload))
+	u.wsServer.Publish(payload,chatId)
+}
+
+
+func (u *chatUseCase)GetChatByParentId(ctx context.Context,parentId int,typeChat r.TypeChat)(res r.Chat,err error){
+	ctx, cancel := context.WithTimeout(ctx, u.timeout)
+	defer cancel()
+	res,err = u.chatRepo.GetChatByParentId(ctx,parentId,typeChat)
+	if err != nil {
+		u.utilU.LogError("GetChatByParentId", "chat_usecase", err.Error())
+		return
+	}
+	return
+}
+
 func (u *chatUseCase) GetUsers(ctx context.Context,d r.RequestUsersGroupOrRoom)(res []r.UsersGroupOrRoom,err error){
 	ctx, cancel := context.WithTimeout(ctx, u.timeout)
 	defer cancel()

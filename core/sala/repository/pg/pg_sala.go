@@ -41,29 +41,20 @@ func (p *salaRepo)DeleteMessage(ctx context.Context,id int)(err error){
 func (p *salaRepo)GetUsers(ctx context.Context,d r.RequestUsersGroupOrRoom)(res []r.UsersGroupOrRoom,err error){
 	var (
 		query string
-		activesCount int
-		inactivesCount int
 	)
-	query = `select count(*) FILTER(WHERE is_out = false) as actives,
-	count(*) FILTER(WHERE is_out = true) as inactives from users_sala where sala_id = $1`
-	err = p.Conn.QueryRowContext(ctx,query,d.ParentId).Scan(&activesCount,&inactivesCount)
-	if err != nil {
+	if d.LastUpdated == nil{
+		query = `select u.id,u.is_admin,u.is_out,p.profile_id,p.nombre,p.apellido,p.profile_photo
+		from users_sala as u inner join profiles as p on p.profile_id = u.profile_id
+		where sala_id = $1 limit 1000`
+		res,err = p.fetchUsers(ctx,query,d.ParentId)
+		return
+	}else{
+		query = `select u.id,u.is_admin,u.is_out,p.profile_id,p.nombre,p.apellido,p.profile_photo
+		from users_sala as u inner join profiles as p on p.profile_id = u.profile_id
+		where sala_id = $1 and u.updated_at > $2 order by u.updated_at desc limit 1000`
+		res,err = p.fetchUsers(ctx,query,d.ParentId,d.LastUpdated)
 		return
 	}
-	if activesCount == d.ActiveUsersCount && inactivesCount == d.InactiveUsersCount {
-		return
-	}
-	sumUsers := activesCount + inactivesCount
-	sumUsersLocal := d.ActiveUsersCount + d.InactiveUsersCount
-	if sumUsers == sumUsersLocal {
-		return
-	}
-	diff := sumUsers - sumUsersLocal
-	query = `select u.id,u.is_admin,u.is_out,p.profile_id,p.nombre,p.apellido,p.profile_photo
-	from users_sala as u inner join profiles as p on p.profile_id = u.profile_id
-	where sala_id = $1 order by u.updated_at desc limit $2`
-	res,err = p.fetchUsers(ctx,query,d.ParentId,diff)
-	return
 }
 func (p *salaRepo) GetChatUnreadMessages(ctx context.Context, chatId int, lastUpdated string) (res []r.Message, err error) {
 	query := `select m.id,m.chat_id,m.profile_id,m.content,m.data,m.created_at,

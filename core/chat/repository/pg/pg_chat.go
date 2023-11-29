@@ -16,7 +16,13 @@ func NewRepository(conn *sql.DB) r.ChatRepository {
 		Conn: conn,
 	}
 }
-
+func (p *chatRepo)GetChatByParentId(ctx context.Context,parentId int,typeChat r.TypeChat)(res r.Chat,err error){
+	query := `select id,parent_id,type_chat from chat where parent_id = $1 and type_chat = $2`
+	err = p.Conn.QueryRowContext(ctx,query,parentId,typeChat).Scan(
+		&res.Id,&res.ParentId,&res.TypeChat,
+	)
+	return
+}
 func (p *chatRepo)GetChatsUser(ctx context.Context,profileId int,page int16,size int8)(res []r.Chat,
 err error){
 	// query := `select g.grupo_id,g.name,g.photo,gm.content,gm.created_at,
@@ -37,7 +43,7 @@ err error){
 	query := `select c.id,g.name,g.photo,($4),ug.grupo_id from user_grupo as ug
 	inner join grupos as g on g.grupo_id = ug.grupo_id
 	inner join chat as c on c.parent_id = ug.grupo_id and type_chat = $4
-	where  ug.profile_id = $1 
+	where  ug.profile_id = $1 and ug.is_out = false 
 	union all 
 	select c.id,e.name,e.photo,($5),e.establecimiento_id from chat as c 
 	left join establecimientos as e on e.establecimiento_id = c.parent_id
@@ -47,7 +53,7 @@ err error){
 	inner join salas as s on s.sala_id = us.sala_id
 	inner join chat as c on c.parent_id = us.sala_id and type_chat = $6
 	left join instalaciones as i on i.instalacion_id = s.instalacion_id
-	where us.profile_id = $1
+	where us.profile_id = $1 and is_out = false
 	limit $2 offset $3`
 	res,err = p.fetchChats(ctx,query,profileId,size, page * int16(size),r.TypeChatGrupo,r.TypeChatInboxEstablecimiento,r.TypeChatSala)
 	return
